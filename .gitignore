@@ -5,3 +5,4 @@ encoders/
 __pycache__/
 
 !src/data/
+!dvc/processed.dvc
