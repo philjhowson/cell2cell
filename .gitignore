@@ -8,3 +8,4 @@ __pycache__/
 data/
 !src/data/
 !dvc/processed.dvc
+data
