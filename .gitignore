@@ -1,8 +1,10 @@
-venv/
-data/
-encoders/
 .dvc/
-__pycache__/
+venv/
+encoders/
 
+__pycache__/
+*.pyc
+
+data/
 !src/data/
 !dvc/processed.dvc
