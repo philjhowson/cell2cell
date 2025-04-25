@@ -1,0 +1,46 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/data/data_formatting.py
+    deps:
+    - path: data/raw/cell2celltrain.csv
+      hash: md5
+      md5: 4e746027551a40b649677606bd4e80a3
+      size: 13365153
+    outs:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: c152ab42679c3a41eca7be28adf48278
+      size: 3161733
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: 69d14d45f5ff6a6bcad5f302ffae256b
+      size: 7373325
+    - path: data/processed/test_index.pkl
+      hash: md5
+      md5: 34b40eee898ba7381e27982b7f368495
+      size: 122758
+    - path: data/processed/train_index.pkl
+      hash: md5
+      md5: 75b856fd4aeb54099f3d197b4acb16f8
+      size: 286094
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 1e46618664028e077e705abf80c888f0
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 45ae807fd97170ef9fb15999efcf7f76
+      size: 107203
+    - path: encoders/OneHotEncoder.pkl
+      hash: md5
+      md5: 86e0723f69630d29f5ba230484ac9f07
+      size: 748
+    - path: encoders/SimpleImputer.pkl
+      hash: md5
+      md5: 341c5d3e72b0148e52190d58656d1396
+      size: 477
+    - path: encoders/TargetEncoder.pkl
+      hash: md5
+      md5: eb3ba0cc2f47ad2ea3a7a8240a357f0c
+      size: 37873
