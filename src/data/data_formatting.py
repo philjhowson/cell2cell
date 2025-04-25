@@ -1,10 +1,15 @@
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+from data_functions import safe_saver
+import category_encoders as ce
 import pandas as pd
+import pickle
 import warnings
 
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
-def exploration():
+def format_data():
 
     data = pd.read_csv('data/raw/cell2celltrain.csv')
     
@@ -33,6 +38,27 @@ def exploration():
                                    inplace = True)
 
     """
+    because I'm later replacing NaN values with the median and using
+    imputer techniques, I am splitting the data at this step to avoid
+    data leakage.
+    """
+
+    X = data.drop(columns = ['Churn'])
+    y = data['Churn']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3,
+                                                        stratify = y)
+
+    train_index = X_train.index
+    test_index = X_test.index
+
+    safe_saver(train_index, 'data/processed/', 'train_index')
+    safe_saver(test_index, 'data/processed/', 'test_index')
+
+    X_train, X_test = X_train.reset_index(drop = True), X_test.reset_index(drop = True)
+    y_train, y_test = y_train.reset_index(drop = True), y_test.reset_index(drop = True)
+
+    """
     here I replace the 'Unknown' data in HandsetPrice with the median
     value. I did explore the difference between mean and median values
     and determined median was more appropriate. This is because the mean
@@ -41,19 +67,19 @@ def exploration():
     are 0 or 1, where a mean would be inappropraite. 
     """
 
-    handy = data['HandsetPrice'][data['HandsetPrice'] != 'Unknown'].copy()
-    handy = handy.astype('int')
-    median = handy.median()
+    for dataset in [X_train, X_test]:
 
-    data['HandsetPrice'].replace({'Unknown' : median}, inplace = True)
-    data['HandsetPrice'] = data['HandsetPrice'].astype('int')
-
-    marriage = data['MaritalStatus'][data['MaritalStatus'] != 'Unknown'].copy()
-    marriage = marriage.astype('int')
-    median = marriage.median()
-
-    data['MaritalStatus'].replace({'Unknown' : median}, inplace = True)
-    data['MaritalStatus'] = data['MaritalStatus'].astype('int')
+        dataset['HandsetPrice'] = dataset['HandsetPrice'].replace({'Unknown': None})
+        dataset['HandsetPrice'] = pd.to_numeric(dataset['HandsetPrice'], errors='coerce')
+        median_handset_price = dataset['HandsetPrice'].median()
+        dataset['HandsetPrice'].fillna(median_handset_price, inplace=True)
+        dataset['HandsetPrice'] = dataset['HandsetPrice'].astype(int)
+        
+        dataset['MaritalStatus'] = dataset['MaritalStatus'].replace({'Unknown': None})
+        dataset['MaritalStatus'] = pd.to_numeric(dataset['MaritalStatus'], errors='coerce')
+        median_marital_status = dataset['MaritalStatus'].median()
+        dataset['MaritalStatus'].fillna(median_marital_status, inplace=True)
+        dataset['MaritalStatus'] = dataset['MaritalStatus'].astype(int)
 
     """
     I am using OneHotEncoder for both 'PrizmCode' and 'Occupation' for
@@ -62,19 +88,77 @@ def exploration():
     """
 
     encoder = OneHotEncoder(handle_unknown = 'ignore', sparse_output = False)
-    encoded = encoder.fit_transform(data[['PrizmCode', 'Occupation']])
-    cols = encoder.get_feature_names_out(['PrizmCode', 'Occupation'])
-    encoded = pd.DataFrame(encoded, columns = cols).astype('int')
+    encoder.fit(X_train[['PrizmCode', 'Occupation']])
+        
+    encoded = pd.DataFrame(encoder.transform(X_train[['PrizmCode', 'Occupation']]),
+                           columns = encoder.get_feature_names_out(['PrizmCode', 'Occupation']))
+    encoded = encoded.astype('int')
+    X_train = pd.concat([X_train, encoded], axis = 1).drop(columns = ['PrizmCode', 'Occupation'])
 
-    data = pd.concat([data, encoded], axis = 1)
-    data.drop(columns = ['PrizmCode', 'Occupation'], inplace = True)
-
-    data.info()
-
-    """
-
-    """
-    print('ServiceArea', len(set(data['ServiceArea'])))
+    encoded = pd.DataFrame(encoder.transform(X_test[['PrizmCode', 'Occupation']]),
+                           columns = encoder.get_feature_names_out(['PrizmCode', 'Occupation']))
+    encoded = encoded.astype('int')
+    X_test = pd.concat([X_test, encoded], axis = 1).drop(columns = ['PrizmCode', 'Occupation'])
     
+    safe_saver(encoder, 'encoders/', 'OneHotEncoder')
+
+    """
+    Here I replace the majority of NaN values with the median. I
+    tended towards the median for two reasons: columns like 'HandsetModels'
+    are clearly categorical in nature, although they are numerically encoded.
+    As such, having float values with decimal places are inappropriate.
+    The values need to be whole numbers. In many other cases, I found
+    that there was a tendency for extreme values (outliers) to pull up the
+    mean, so median was again selected. 'ServiceArea' is a categorical
+    variable and I removed it so I can impute the missing values and target
+    encode later.
+    """
+
+    na_columns = data.columns[data.isna().any()].tolist()
+    na_columns.remove('ServiceArea')
+
+    for dataset in [X_train, X_test]:
+        for column in na_columns:
+            median = dataset[column].median()
+            dataset[column].fillna(median, inplace = True)
+
+    """
+    impute the missing values for service area.
+    """
+
+    imputer = SimpleImputer(strategy = 'most_frequent')
+
+    X_train['ServiceArea'] = imputer.fit_transform(X_train[['ServiceArea']]).flatten()
+    X_test['ServiceArea'] = imputer.transform(X_test[['ServiceArea']]).flatten()
+
+    safe_saver(imputer, 'encoders/', 'SimpleImputer')
+
+    """
+    now I target encode both 'ServiceArea', because it has over 700 unique values
+    which is just too much for OneHotEncoding, and 'HandsetModels' is actually a
+    categorical value that is encoded as a number and has 15 unique values.
+    """
+
+    encoder = ce.TargetEncoder(cols = ['ServiceArea', 'HandsetModels'])
+
+    encoded = encoder.fit_transform(X_train[['ServiceArea', 'HandsetModels']],
+                                    y_train)
+
+    X_train = pd.concat([X_train, encoded], axis = 1).drop(columns = ['ServiceArea',
+                                                                      'HandsetModels'])
+    
+    encoded = encoder.transform(X_test[['ServiceArea', 'HandsetModels']],
+                                y_test)
+
+    X_test = pd.concat([X_test, encoded], axis = 1).drop(columns = ['ServiceArea',
+                                                                    'HandsetModels'])
+
+    safe_saver(encoder, 'encoders/', 'TargetEncoder')
+
+    X_train.to_csv('data/processed/X_train.csv', index = False)
+    X_test.to_csv('data/processed/X_test.csv', index = False)
+    y_train.to_csv('data/processed/y_train.csv', index = False)
+    y_test.to_csv('data/processed/y_test.csv', index = False)
+
 if __name__ == '__main__':
-    exploration()
+    format_data()

@@ -1,4 +1,7 @@
 venv/
 data/
+encoders/
+.dvc/
+__pycache__/
 
 !src/data/

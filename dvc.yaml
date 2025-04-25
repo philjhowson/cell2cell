@@ -1,0 +1,16 @@
+stages:
+  preprocess:
+    cmd: python src/data/data_formatting.py
+    deps:
+    - data/raw/cell2celltrain.csv
+    - src/data/data_formatting.py
+    outs:
+    - encoders/OneHotEncoder.pkl
+    - encoders/SimpleImputer.pkl
+    - encoders/TargetEncoder.pkl
+    - data/processed/test_index.pkl
+    - data/processed/train_index.pkl
+    - data/processed/X_test.csv
+    - data/processed/X_train.csv
+    - data/processed/y_test.csv
+    - data/processed/y_train.csv
