@@ -5,11 +5,5 @@ encoders/
 __pycache__/
 *.pyc
 
-data/
-!src/data/
-!dvc/processed.dvc
-data
-
-data
-
-data
+data/processed/
+data/raw/
