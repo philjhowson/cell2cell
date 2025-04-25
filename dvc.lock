@@ -7,30 +7,34 @@ stages:
       hash: md5
       md5: 4e746027551a40b649677606bd4e80a3
       size: 13365153
+    - path: src/data/data_formatting.py
+      hash: md5
+      md5: 6a7dbab9762af27012feae8c7cacb6c9
+      size: 6901
     outs:
     - path: data/processed/X_test.csv
       hash: md5
-      md5: c152ab42679c3a41eca7be28adf48278
-      size: 3161733
+      md5: 875df7abdba35f9f7ad1014e7894b6e3
+      size: 3161365
     - path: data/processed/X_train.csv
       hash: md5
-      md5: 69d14d45f5ff6a6bcad5f302ffae256b
-      size: 7373325
+      md5: daa77223f349318cc08fe92ae5389a22
+      size: 7373742
     - path: data/processed/test_index.pkl
       hash: md5
-      md5: 34b40eee898ba7381e27982b7f368495
+      md5: 96984e84ca84179fc465e54d050ac11a
       size: 122758
     - path: data/processed/train_index.pkl
       hash: md5
-      md5: 75b856fd4aeb54099f3d197b4acb16f8
+      md5: 24064561f75678c7612b7fa04ea3c159
       size: 286094
     - path: data/processed/y_test.csv
       hash: md5
-      md5: 1e46618664028e077e705abf80c888f0
+      md5: 0ef58160bf9301ced2fa3dfbba0f5543
       size: 45952
     - path: data/processed/y_train.csv
       hash: md5
-      md5: 45ae807fd97170ef9fb15999efcf7f76
+      md5: 97eb91ba29eea4e3d7cff24dc4f64bba
       size: 107203
     - path: encoders/OneHotEncoder.pkl
       hash: md5
@@ -42,5 +46,5 @@ stages:
       size: 477
     - path: encoders/TargetEncoder.pkl
       hash: md5
-      md5: eb3ba0cc2f47ad2ea3a7a8240a357f0c
-      size: 37873
+      md5: d3d1dc0591179e942a168f885a4e13ed
+      size: 37778
