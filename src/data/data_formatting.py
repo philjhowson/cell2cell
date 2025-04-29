@@ -40,10 +40,11 @@ def format_data():
     """
     because I'm later replacing NaN values with the median and using
     imputer techniques, I am splitting the data at this step to avoid
-    data leakage.
+    data leakage and I drop the 'CustomerID' column because it provides
+    no unique information. It just a unique value for each custom.
     """
 
-    X = data.drop(columns = ['Churn'])
+    X = data.drop(columns = ['CustomerID', 'Churn'])
     y = data['Churn']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3,
@@ -73,13 +74,13 @@ def format_data():
         dataset['HandsetPrice'] = dataset['HandsetPrice'].replace({'Unknown': None})
         dataset['HandsetPrice'] = pd.to_numeric(dataset['HandsetPrice'], errors='coerce')
         median_handset_price = dataset['HandsetPrice'].median()
-        dataset['HandsetPrice'].fillna(median_handset_price, inplace=True)
+        dataset['HandsetPrice'].fillna(median_handset_price, inplace = True)
         dataset['HandsetPrice'] = dataset['HandsetPrice'].astype(int)
         
         dataset['MaritalStatus'] = dataset['MaritalStatus'].replace({'Unknown': None})
-        dataset['MaritalStatus'] = pd.to_numeric(dataset['MaritalStatus'], errors='coerce')
+        dataset['MaritalStatus'] = pd.to_numeric(dataset['MaritalStatus'], errors = 'coerce')
         median_marital_status = dataset['MaritalStatus'].median()
-        dataset['MaritalStatus'].fillna(median_marital_status, inplace=True)
+        dataset['MaritalStatus'].fillna(median_marital_status, inplace = True)
         dataset['MaritalStatus'] = dataset['MaritalStatus'].astype(int)
 
     """
@@ -145,14 +146,14 @@ def format_data():
     encoded = encoder.fit_transform(X_train[['ServiceArea', 'HandsetModels']],
                                     y_train)
 
-    X_train = pd.concat([X_train, encoded], axis = 1).drop(columns = ['ServiceArea',
-                                                                      'HandsetModels'])
+    X_train = pd.concat([X_train.drop(columns = ['ServiceArea', 'HandsetModels']), encoded],
+                        axis = 1)
     
     encoded = encoder.transform(X_test[['ServiceArea', 'HandsetModels']],
                                 y_test)
 
-    X_test = pd.concat([X_test, encoded], axis = 1).drop(columns = ['ServiceArea',
-                                                                    'HandsetModels'])
+    X_test = pd.concat([X_test.drop(columns = ['ServiceArea', 'HandsetModels']), encoded],
+                        axis = 1)
 
     safe_saver(encoder, 'encoders/', 'TargetEncoder')
 
