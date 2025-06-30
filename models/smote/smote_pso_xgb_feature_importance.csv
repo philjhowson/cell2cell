@@ -1,0 +1,11 @@
+Feature,Importance,Absolute
+ThreewayCalls,0.2905279,0.2905279
+CallWaitingCalls,0.18935184,0.18935184
+MonthsInService,0.1357389,0.1357389
+CustomerCareCalls,0.1108991,0.1108991
+InboundCalls,0.079132505,0.079132505
+Occupation_Clerical,0.053655915,0.053655915
+ActiveSubs,0.04083002,0.04083002
+MonthlyMinutes,0.035819236,0.035819236
+PercChangeMinutes,0.03345134,0.03345134
+MonthlyRevenue,0.030593159,0.030593159

@@ -84,7 +84,7 @@ def data_exploration():
     rows = filtered_corr_mat.index
     cols = filtered_corr_mat.columns 
 
-    mask = (filtered_corr_mat > 0.8) & (filtered_corr_mat != 1)
+    mask = np.triu((filtered_corr_mat > 0.8), k=1)
     pairs = list(zip(*np.where(mask)))
     values = [(rows[i], cols[j]) for i, j in pairs]
 
@@ -106,8 +106,6 @@ def data_exploration():
 
     plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
             colors = colors, startangle = 90)
-
-    plt.tight_layout()
     plt.savefig('images/churn_percentage.png')
     
 if __name__ == '__main__':
