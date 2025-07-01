@@ -9,5 +9,6 @@ __pycache__/
 data/processed/
 data/raw/
 models/
+metrics/
 
 !data/models/
