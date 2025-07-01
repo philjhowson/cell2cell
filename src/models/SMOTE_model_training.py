@@ -168,7 +168,7 @@ def run_script(function, model):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Train model on SMOTENC or SMOTEENC PCA reduced data')
-    parser.add_argument('--function', default = 'rfe', help = 'Default: rfe. Choose base, rfe, pso, or pca.')
+    parser.add_argument('--function', default = 'base', help = 'Default: base. Choose base, rfe, pso, or pca.')
     parser.add_argument('--model', default = 'log', help = 'Default: log. Choose either log, rf, or xgb.')
     arg = parser.parse_args()
 

@@ -11,7 +11,7 @@ def get_predictions():
 def print_model_results():
 
     path = 'metrics/scaled/'
-    files = sorted([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))])
+    files = sorted([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))], key = str.lower)
 
     print(files)
 
