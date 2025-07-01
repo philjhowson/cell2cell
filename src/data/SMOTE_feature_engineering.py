@@ -17,8 +17,8 @@ import numpy as np
 def feature_engineering():
 
     X_scaled = pd.read_csv('data/processed/scaled/X_train_scaled.csv')
-    y = pd.read_csv('data/processed/y_train')['Churn']
-    X_test_scaled = pd.read_csv('data/processed/scale/X_test_scaled.csv')
+    y = pd.read_csv('data/processed/y_train.csv')['Churn']
+    X_test_scaled = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
 
     """
     I make a list of numerical columns to extract the list of columns which are categorical.
@@ -61,15 +61,15 @@ def feature_engineering():
 
     X_train_pca = pd.DataFrame(X_train_pca, columns = [f'PC{i+1}' for i in range(X_train_pca.shape[1])])
 
-    X_train_pca.to_csv('data/processed/smote/X_train_pca.csv', index = False)
-    safe_saver(pca, 'encoders/', 'PCA_transformer')
+    X_train_pca.to_csv('data/processed/smote/X_train_smote_pca.csv', index = False)
+    safe_saver(pca, 'encoders/', 'PCA_transformer_smote')
 
     X_test_pca = X_test_scaled.copy()
     X_test_pca = pca.transform(X_test_pca)
     
     X_test_pca = pd.DataFrame(X_test_pca, columns = [f'PC{i+1}' for i in range(X_test_pca.shape[1])])
 
-    X_test_pca.to_csv('data/processed/smote/X_test_pca.csv', index = False)
+    X_test_pca.to_csv('data/processed/smote/X_test_smote_pca.csv', index = False)
 
 def PSO(model):
     
@@ -126,7 +126,7 @@ def RFECV_reduction(model):
     y_train = pd.read_csv('data/processed/smote/y_train_resampled.csv')['Churn']
 
     selector = RFECV(estimator = model, step = 1, cv = StratifiedKFold(5),
-                     scoring = 'f1')
+                     scoring = 'roc_auc')
 
     selector.fit(X_train, y_train)
     features = X_train.columns[selector.support_]

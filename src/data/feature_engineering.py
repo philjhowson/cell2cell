@@ -108,7 +108,7 @@ def RFECV_reduction(model):
     y_train = pd.read_csv('data/processed/y_train.csv')['Churn']
 
     selector = RFECV(estimator = model, step = 1, cv = StratifiedKFold(5),
-                     scoring = 'f1')
+                     scoring = 'roc_auc')
 
     selector.fit(X_train, y_train)
     features = X_train.columns[selector.support_]

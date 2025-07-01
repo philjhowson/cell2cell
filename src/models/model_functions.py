@@ -95,7 +95,7 @@ def train_log_rf(model, params, X_train = None, y_train = None, X_test = None, y
     feature_names = X_train.columns
     feature_importance = pd.DataFrame(zip(feature_names, importances), columns = ['Feature', 'Importance'])
     if name == 'log':
-        feature_importance['Absolute'] = abs(importances)
+        feature_importance['Absolute'] = abs(feature_importance['Importance'])
         feature_importance.sort_values(by = 'Absolute', ascending = False, inplace = True)
     else:
         feature_importance.sort_values(by = 'Importance', ascending = False, inplace = True)
@@ -103,6 +103,95 @@ def train_log_rf(model, params, X_train = None, y_train = None, X_test = None, y
     
     print('Feature Importances:')
     print(feature_importance.head(10))
+
+def pso_train_log_rf(model, params, X_train = None, y_train = None, X_test = None, y_test = None,
+                     folder = None, name = None):
+    
+    pso_values = safe_loader(f"data/processed/{folder}/pso_features_{name}.pkl")
+
+    results = {}
+
+    for item in pso_values:
+
+        feature_indices = pso_values[item]['features']
+        cols_to_keep = X_train.columns[feature_indices]
+        X = X_train[cols_to_keep]
+
+        grid = GridSearchCV(model, param_grid = params, scoring = 'roc_auc',
+                            cv = 4)
+
+        grid.fit(X, y_train)
+        y_pred = grid.predict(X)
+        y_proba = grid.predict_proba(X)[:, 1]
+        train_f1 = f1_score(y_train, y_pred, average = 'weighted')
+        train_roc = roc_auc_score(y_train, y_proba)
+
+        X = X_test[cols_to_keep]
+        y_pred = grid.predict(X)
+        y_proba = grid.predict_proba(X)[:, 1]
+        test_f1 = f1_score(y_test, y_pred, average = 'weighted')
+        test_roc = roc_auc_score(y_test, y_proba)
+
+        results[item] = {'train_f1' : train_f1,
+                         'train_roc' : train_roc,
+                         'test_f1' : test_f1,
+                         'test_roc' : test_roc,
+                         'params' : grid.best_params_,
+                         'features' : cols_to_keep}
+    
+    best_roc = max(results, key = lambda k: results[k]['test_roc'])
+    feature_indices = pso_values[best_roc]['features']
+    cols_to_keep = X_train.columns[feature_indices]
+    X_train = X_train[cols_to_keep]
+    X_test = X_test[cols_to_keep]
+    best_params = results[best_roc]['params']
+
+    model.set_params(**best_params)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_train)
+    y_pred_proba = model.predict_proba(X_train)[:, 1]
+
+    train_f1 = f1_score(y_train, y_pred, average = 'weighted')
+    train_roc = roc_auc_score(y_train, y_pred_proba)
+
+    y_pred = model.predict(X_test)
+    y_pred_proba = model.predict_proba(X_test)[:, 1]
+    test_f1 = f1_score(y_test, y_pred, average = 'weighted')
+    test_roc = roc_auc_score(y_test, y_pred_proba)
+
+    results = {'train_f1' : train_f1,
+               'train_roc' : train_roc,
+               'test_f1' : test_f1,
+               'test_roc' : test_roc}
+
+    safe_saver(results, f"metrics/{folder}/", f"pso_scores_{name}")
+
+    safe_saver(model, f"models/{folder}/", f"pso_{name}_model")
+    safe_saver(best_params, f"models/{folder}/", f"pso_best_{name}_params")
+
+    print(f"Best PSO model: {best_roc}\n"
+          f"Features: {list(X_train.columns)}\n"
+          f"Hyperparameters: {best_params}\n"
+          f"F1-Scores: {round(results['train_f1'], 3)}; {round(results['test_f1'], 3)}\n"
+          f"ROC-AUCs: {round(results['train_roc'], 3)}; {round(results['test_roc'], 3)}")
+
+    match name:
+        case 'log':
+            importances = model.coef_[0]
+        case _:
+            importances = model.feature_importances_
+
+    feature_names = X_train.columns
+    feature_importance = pd.DataFrame(zip(feature_names, importances), columns = ['Feature', 'Importance'])
+    if name == 'log':
+        feature_importance['Absolute'] = abs(feature_importance['Importance'])
+        feature_importance.sort_values(by = 'Absolute', ascending = False, inplace = True)
+    else:
+        feature_importance.sort_values(by = 'Importance', ascending = False, inplace = True)
+    feature_importance.to_csv(f"models/{folder}/pso_feature_importance_{name}.csv", index = False)
+
+    print(feature_importance.head(10))  
 
 def focal_loss(alpha = 0.25, gamma = 2.0):
     def fl_obj(preds, dtrain):
@@ -154,7 +243,7 @@ def train_xgb(params, X_train = None, y_train = None, X_test = None, y_test = No
                 best_iter = model.best_iteration
 
     best_config = {'params': best_params, 'num_boost_rounds': best_iter}
-    safe_saver(best_config, 'models/{folder}/', f"{iteration}_best_{name}_params")
+    safe_saver(best_config, f"models/{folder}/", f"{iteration}_best_{name}_params")
 
     dtrain = xgb.DMatrix(X_train, label = y_train, feature_names = list(X_train.columns))        
 
@@ -199,15 +288,127 @@ def train_xgb(params, X_train = None, y_train = None, X_test = None, y_test = No
     print('Feature Importances:')
     print(feature_importance.head(10))
 
+def pso_train_xgb(params, X_train = None, y_train = None, X_test = None, y_test = None,
+                     folder = None, name = None):
+    
+    pso_values = safe_loader(f"data/processed/{folder}/pso_features_{name}.pkl")
+    
+    X_tr, X_val, y_tr, y_val = train_test_split(X_train, y_train, test_size = 0.3, stratify = y_train)
+
+    results = {}
+
+    for item in pso_values:
+
+        feature_indices = pso_values[item]['features']
+        cols_to_keep = X_train.columns[feature_indices]
+        X = X_tr[cols_to_keep]
+        X_v = X_val[cols_to_keep]
+        X_test_reduced = X_test[cols_to_keep]
+
+        dtrain = xgb.DMatrix(X, label = y_tr)
+        dval = xgb.DMatrix(X_v, label = y_val)
+        evals = [(dval, 'validation')]
+        dtest = xgb.DMatrix(X_test_reduced, label = y_test)
+
+        best_score = 0
+        best_params = None
+
+        for values in product(*params.values()):
+            model_params = dict(zip(params.keys(), values))
+            model_params.update({'eval_metric': 'auc', 'device': 'cuda',
+                                'random_state': 42})
+
+            model = xgb.train(model_params, dtrain, num_boost_round = 10000, evals = evals, 
+                                early_stopping_rounds = 20, verbose_eval = False,
+                                obj = focal_loss(alpha = 0.25, gamma = 2.0))
+
+            y_pred_probs = model.predict(dtrain)
+            y_pred = (y_pred_probs >= 0.5).astype(int)
+            train_f1 = f1_score(y_tr, y_pred, average = 'weighted')
+            train_roc = roc_auc_score(y_tr, y_pred_probs)
+
+            y_pred_probs = model.predict(dtest)
+            y_pred = (y_pred_probs >= 0.5).astype(int)
+            test_f1 = f1_score(y_test, y_pred, average = 'weighted')
+            test_roc = roc_auc_score(y_test, y_pred_probs)
+
+            if test_roc > best_score:
+                best_score = train_roc
+
+                best_train_f1 = train_f1
+                best_train_roc = train_roc
+                best_test_f1 = test_f1
+                best_test_roc = test_roc
+                best_params = model_params
+                best_iter = model.best_iteration
+
+        results[item] = {'train_f1' : best_train_f1,
+                         'train_roc' : best_train_roc,
+                         'test_f1' : best_test_f1,
+                         'test_roc' : best_test_roc,
+                         'params' : best_params,
+                         'best_iter' : best_iter, 
+                         'features' : cols_to_keep}
+
+    best_roc = max(results, key = lambda k: results[k]['test_roc'])
+    feature_indices = pso_values[best_roc]['features']
+    cols_to_keep = X_train.columns[feature_indices]
+    best_params = results[best_roc]['params']
+
+    X = X_train[cols_to_keep]
+    X_test_reduced = X_test[cols_to_keep]
+    dtrain = xgb.DMatrix(X, label = y_train, feature_names = list(X.columns))
+    dtest = xgb.DMatrix(X_test_reduced, label = y_test)
+
+    best_config = {'params': best_params, 'num_boost_rounds': best_iter}
+    safe_saver(best_config, f"models/{folder}/", f"pso_best_{name}_params")
+       
+    model = xgb.train(best_params, dtrain, num_boost_round = best_iter, 
+                      verbose_eval = False, obj = focal_loss(alpha = 0.25, gamma = 2.0))
+
+    safe_saver(model, f"models/{folder}/", f"pso_{name}_model") 
+
+    y_pred_probs = model.predict(dtrain)
+    y_pred = (y_pred_probs >= 0.5).astype(int)
+
+    train_f1 = f1_score(y_train, y_pred, average = 'weighted')
+    train_roc = roc_auc_score(y_train, y_pred_probs)
+
+    y_pred_probs = model.predict(dtest)
+    y_pred = (y_pred_probs >= 0.5).astype(int)
+    test_f1 = f1_score(y_test, y_pred, average = 'weighted')
+    test_roc = roc_auc_score(y_test, y_pred_probs)
+
+    results = {'train_f1' : train_f1,
+               'train_roc' : train_roc,
+               'test_f1' : test_f1,
+               'test_roc' : test_roc,
+               'num_rounds' : best_iter}
+
+    safe_saver(results, f"metrics/{folder}", f"pso_scores_{name}")   
+
+    print("Best params:", best_params)
+
+    print(f"Training F1-Score: {round(train_f1, 3)}\nTest F1-Score: {round(test_f1, 3)}")
+    print(f"Training ROC-AUC Score: {round(train_roc, 3)}\nTest ROC-AUC: {round(test_roc, 3)}")
+
+    importances = model.get_score()
+    feature_importance = pd.DataFrame(importances.items(), columns = ['Feature', 'Importance'])
+    feature_importance.sort_values(by = 'Importance', ascending = False, inplace = True)
+    feature_importance.to_csv(f"models/{folder}/pso_feature_importance_{name}.csv", index = False)
+
+    print('Feature Importances:')
+    print(feature_importance.head(10))
+
 class ChurnNet(nn.Module):
-    def __init__(self, input_size):
+    def __init__(self, input_size = 3):
         """
         initializes an FNN with multiple hidden layers, and ReLU()
         activations. Uses the default Kaiming weight initializations.
         args:
-            input_size: default is 66, which is the full feature space
-            of the dataset. If a reduced dataset is used, change the
-            input size to match.
+            input_size: default is 3, which refers to how many model
+            outputs are stacked in the ensemble model. 1 feature for
+            each set of model predictions.
         """
         super(ChurnNet, self).__init__()
         self.ChurnNet = nn.Sequential(

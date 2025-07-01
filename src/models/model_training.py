@@ -1,7 +1,7 @@
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, roc_auc_score
-from model_functions import train_log_rf, train_xgb
+from model_functions import train_log_rf, train_xgb, pso_train_log_rf, pso_train_xgb
 import pandas as pd
 import argparse
 
@@ -37,11 +37,9 @@ def train_baseline(model):
     y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
 
     if name != 'xgb':
-
         train_log_rf(model, params, X_train, y_train, X_test, y_test, 'scaled', 'baseline', name)
 
     else:
-
         train_xgb(params, X_train, y_train, X_test, y_test, 'scaled', 'baseline', name)
 
 def RFECV_reduced(model):
@@ -107,11 +105,16 @@ def pso_reduced(model):
                       'colsample_bytree': [0.6, 0.8]}
             name = 'xgb'
 
+    X_train = pd.read_csv('data/processed/scaled/X_train_scaled.csv')
+    y_train = pd.read_csv('data/processed/y_train.csv')['Churn']
+    X_test = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
+    y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
+
     if name != 'xgb':
-        train_log_rf(model, params, folder = 'scaled', iteration = 'pso', name = name, reduction = 'pso')
+        pso_train_log_rf(model, params, X_train, y_train, X_test, y_test, folder = 'scaled', name = name)
 
     else:
-        train_xgb(params, folder = 'scaled', iteration = 'pso', name = name, reduction = 'pso')
+        pso_train_xgb(params, X_train, y_train, X_test, y_test, folder = 'scaled', name = name)
 
 def pca_reduced(model):
     match model:
