@@ -9,6 +9,9 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from itertools import product
 import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from typing import Dict, Any
 import xgboost as xgb
 import numpy as np
 import pickle
@@ -42,6 +45,25 @@ def safe_loader(path):
     with open(path, 'rb') as f:
         return pickle.load(f)
     
+def get_models_and_features(models, path_to_models, path_to_features):
+
+    model_set = {}
+
+    for model in models:
+        filename = '_features_'.join(model.split('_')[:2]) + '.pkl'
+        name = '_'.join(model.split('_')[:2])
+
+        if os.path.exists(f"{path_to_features}/{filename}"):
+            features = safe_loader(f"{path_to_features}/{filename}")
+        else:
+            features = None
+
+        model_set[name] = {}
+        model_set[name]['model'] = safe_loader(f"{path_to_models}/{model}")
+        model_set[name]['features'] = features
+
+    return model_set
+    
 def train_log_rf(model, params, X_train = None, y_train = None, X_test = None, y_test = None,
                  folder = None, iteration = None, name = None, reduction = None):
 
@@ -60,8 +82,8 @@ def train_log_rf(model, params, X_train = None, y_train = None, X_test = None, y
 
     best_params = grid.best_params_
 
-    safe_saver(grid.best_estimator_, f"models/{folder}/", f"{iteration}_best_{name}_model")
-    safe_saver(grid.best_params_, f"models/{folder}/", f"{iteration}_best_{name}_params")
+    safe_saver(grid.best_estimator_, f"models/{folder}/", f"{iteration}_{name}_model")
+    safe_saver(grid.best_params_, f"models/{folder}/", f"{iteration}_{name}_params")
 
     y_pred = grid.predict(X_train)
     y_pred_proba = grid.predict_proba(X_train)[:, 1]
@@ -107,7 +129,7 @@ def train_log_rf(model, params, X_train = None, y_train = None, X_test = None, y
 def pso_train_log_rf(model, params, X_train = None, y_train = None, X_test = None, y_test = None,
                      folder = None, name = None):
     
-    pso_values = safe_loader(f"data/processed/{folder}/pso_features_{name}.pkl")
+    pso_values = safe_loader(f"data/processed/{folder}/pso_feature_set_{name}.pkl")
 
     results = {}
 
@@ -146,6 +168,8 @@ def pso_train_log_rf(model, params, X_train = None, y_train = None, X_test = Non
     X_test = X_test[cols_to_keep]
     best_params = results[best_roc]['params']
 
+    safe_saver(cols_to_keep, f"data/processed/{folder}/", f"pso_features_{name}")
+
     model.set_params(**best_params)
     model.fit(X_train, y_train)
 
@@ -168,7 +192,7 @@ def pso_train_log_rf(model, params, X_train = None, y_train = None, X_test = Non
     safe_saver(results, f"metrics/{folder}/", f"pso_scores_{name}")
 
     safe_saver(model, f"models/{folder}/", f"pso_{name}_model")
-    safe_saver(best_params, f"models/{folder}/", f"pso_best_{name}_params")
+    safe_saver(best_params, f"models/{folder}/", f"pso_{name}_params")
 
     print(f"Best PSO model: {best_roc}\n"
           f"Features: {list(X_train.columns)}\n"
@@ -243,7 +267,7 @@ def train_xgb(params, X_train = None, y_train = None, X_test = None, y_test = No
                 best_iter = model.best_iteration
 
     best_config = {'params': best_params, 'num_boost_rounds': best_iter}
-    safe_saver(best_config, f"models/{folder}/", f"{iteration}_best_{name}_params")
+    safe_saver(best_config, f"models/{folder}/", f"{iteration}_{name}_params")
 
     dtrain = xgb.DMatrix(X_train, label = y_train, feature_names = list(X_train.columns))        
 
@@ -291,7 +315,7 @@ def train_xgb(params, X_train = None, y_train = None, X_test = None, y_test = No
 def pso_train_xgb(params, X_train = None, y_train = None, X_test = None, y_test = None,
                      folder = None, name = None):
     
-    pso_values = safe_loader(f"data/processed/{folder}/pso_features_{name}.pkl")
+    pso_values = safe_loader(f"data/processed/{folder}/pso_feature_set_{name}.pkl")
     
     X_tr, X_val, y_tr, y_val = train_test_split(X_train, y_train, test_size = 0.3, stratify = y_train)
 
@@ -355,13 +379,15 @@ def pso_train_xgb(params, X_train = None, y_train = None, X_test = None, y_test 
     cols_to_keep = X_train.columns[feature_indices]
     best_params = results[best_roc]['params']
 
+    safe_saver(cols_to_keep, f"data/processed/{folder}/", f"pso_features_{name}")
+
     X = X_train[cols_to_keep]
     X_test_reduced = X_test[cols_to_keep]
     dtrain = xgb.DMatrix(X, label = y_train, feature_names = list(X.columns))
     dtest = xgb.DMatrix(X_test_reduced, label = y_test)
 
     best_config = {'params': best_params, 'num_boost_rounds': best_iter}
-    safe_saver(best_config, f"models/{folder}/", f"pso_best_{name}_params")
+    safe_saver(best_config, f"models/{folder}/", f"pso_{name}_params")
        
     model = xgb.train(best_params, dtrain, num_boost_round = best_iter, 
                       verbose_eval = False, obj = focal_loss(alpha = 0.25, gamma = 2.0))
@@ -399,6 +425,64 @@ def pso_train_xgb(params, X_train = None, y_train = None, X_test = None, y_test 
 
     print('Feature Importances:')
     print(feature_importance.head(10))
+
+def model_predictions(train: pd.DataFrame, test: pd.DataFrame, train_pca: pd.DataFrame,
+                      test_pca: pd.DataFrame, dictionary: Dict[str, Any], name: str = None):
+
+    training_preds = {}
+    training_proba = {}
+    test_preds = {}
+    test_proba = {}
+
+    for item in dictionary:
+
+        model = dictionary[item].get('model')
+        features = dictionary[item].get('features')
+
+        if features is not None and len(features) > 0:
+            X_train = train[features].copy()
+            X_test = test[features].copy()
+        elif item.startswith('pca'):
+            X_train = train_pca.copy()
+            X_test = test_pca.copy()
+        else:
+            X_train = train.copy()
+            X_test = test.copy()
+
+        if isinstance(model, xgb.Booster):
+            X_train = xgb.DMatrix(X_train)
+            X_test = xgb.DMatrix(X_test)
+
+            raw_scores = model.predict(X_train)
+            train_probs = 1 / (1 + np.exp(-raw_scores))
+            train_predictions = (train_probs > 0.5).astype(int)
+
+            raw_scores = model.predict(X_test)
+            test_probs = 1 / (1 + np.exp(-raw_scores))
+            test_predictions = (test_probs > 0.5).astype(int)
+
+        else:
+            train_predictions = model.predict(X_train)
+            train_probs = model.predict_proba(X_train)[:, 1]
+
+            test_predictions = model.predict(X_test)
+            test_probs = model.predict_proba(X_test)[:, 1]    
+
+        if name == 'smote':
+            training_preds[f"smote_{item}"] = train_predictions
+            training_proba[f"smote_{item}"] = train_probs
+
+            test_preds[f"smote_{item}"] = test_predictions
+            test_proba[f"smote_{item}"] = test_probs
+
+        else:
+            training_preds[item] = train_predictions
+            training_proba[item] = train_probs
+
+            test_preds[item] = test_predictions
+            test_proba[item] = test_probs
+
+    return pd.DataFrame(training_preds), pd.DataFrame(training_proba), pd.DataFrame(test_preds), pd.DataFrame(test_proba)
 
 class ChurnNet(nn.Module):
     def __init__(self, input_size = 3):

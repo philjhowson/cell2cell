@@ -49,8 +49,8 @@ def feature_engineering():
     smote = SMOTENC(categorical_features = cat_features, random_state = 42)
     X_resampled, y_resampled = smote.fit_resample(X_scaled, y)
 
-    X_resampled.to_csv('data/processed/smote/X_train_resampled.csv', index = False)
-    y_resampled.to_csv('data/processed/smote/y_train_resampled.csv', index = False)
+    X_resampled.to_csv('data/processed/smote/X_train_smote.csv', index = False)
+    y_resampled.to_csv('data/processed/smote/y_train_smote.csv', index = False)
 
     print('Before Resampling:', len(X_scaled), 'After Resampling:', len(X_resampled)) 
 
@@ -64,11 +64,16 @@ def feature_engineering():
     X_train_pca.to_csv('data/processed/smote/X_train_smote_pca.csv', index = False)
     safe_saver(pca, 'encoders/', 'PCA_transformer_smote')
 
+    X_scaled_pca = X_scaled.copy()
+    X_train_scaled_pca = pca.transform(X_scaled_pca)
+
+    X_train_scaled_pca = pd.DataFrame(X_train_scaled_pca, columns = [f'PC{i+1}' for i in range(X_train_scaled_pca.shape[1])])
+    X_train_scaled_pca.to_csv('data/processed/smote/X_train_scaled_pca.csv', index = False)
+
     X_test_pca = X_test_scaled.copy()
     X_test_pca = pca.transform(X_test_pca)
     
     X_test_pca = pd.DataFrame(X_test_pca, columns = [f'PC{i+1}' for i in range(X_test_pca.shape[1])])
-
     X_test_pca.to_csv('data/processed/smote/X_test_smote_pca.csv', index = False)
 
 def PSO(model):
@@ -104,7 +109,7 @@ def PSO(model):
                                'best_mask' : best_mask,
                                'features' : selected_features}
 
-    safe_saver(features_dict, 'data/processed/smote/', f"pso_features_{name}")
+    safe_saver(features_dict, 'data/processed/smote/', f"pso_feature_set_{name}")
 
     print(f"PSO feature selection complete. Summary of findings:\n{features_dict}")
 
@@ -122,8 +127,8 @@ def RFECV_reduction(model):
                                 device = 'cuda', random_state = 42)
             name = 'xgb'
 
-    X_train = pd.read_csv('data/processed/smote/X_train_resampled.csv')
-    y_train = pd.read_csv('data/processed/smote/y_train_resampled.csv')['Churn']
+    X_train = pd.read_csv('data/processed/smote/X_train_smote.csv')
+    y_train = pd.read_csv('data/processed/smote/y_train_smote.csv')['Churn']
 
     selector = RFECV(estimator = model, step = 1, cv = StratifiedKFold(5),
                      scoring = 'roc_auc')

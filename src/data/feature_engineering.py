@@ -86,7 +86,7 @@ def PSO(model):
                                'best_mask' : best_mask,
                                'features' : selected_features}
 
-    safe_saver(features_dict, 'data/processed/scaled/', f"pso_features_{name}")
+    safe_saver(features_dict, 'data/processed/scaled/', f"pso_feature_set_{name}")
 
     print(f"PSO feature selection complete. Summary of findings:\n{features_dict}")
 

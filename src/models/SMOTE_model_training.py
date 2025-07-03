@@ -30,8 +30,8 @@ def train_baseline(model):
                       'colsample_bytree': [0.6, 0.8]}
             name = 'xgb'
 
-    X_train = pd.read_csv('data/processed/smote/X_train_resampled.csv')
-    y_train = pd.read_csv('data/processed/smote/y_train_resampled.csv')['Churn']
+    X_train = pd.read_csv('data/processed/smote/X_train_smote.csv')
+    y_train = pd.read_csv('data/processed/smote/y_train_smote.csv')['Churn']
     X_test = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
     y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
 
@@ -67,8 +67,8 @@ def RFECV_reduced(model):
                       'colsample_bytree': [0.6, 0.8]}
             name = 'xgb'
 
-    X_train = pd.read_csv('data/processed/smote/X_train_resampled.csv')
-    y_train = pd.read_csv('data/processed/smote/y_train_resampled.csv')['Churn']
+    X_train = pd.read_csv('data/processed/smote/X_train_smote.csv')
+    y_train = pd.read_csv('data/processed/smote/y_train_smote.csv')['Churn']
     X_test = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
     y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
 
@@ -104,8 +104,8 @@ def pso_reduced(model):
                       'colsample_bytree': [0.6, 0.8]}
             name = 'xgb'
 
-    X_train = pd.read_csv('data/processed/smote/X_train_resampled.csv')
-    y_train = pd.read_csv('data/processed/smote/y_train_resampled.csv')['Churn']
+    X_train = pd.read_csv('data/processed/smote/X_train_smote.csv')
+    y_train = pd.read_csv('data/processed/smote/y_train_smote.csv')['Churn']
     X_test = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
     y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
 
@@ -141,8 +141,8 @@ def pca_reduced(model):
                       'colsample_bytree': [0.6, 0.8]}
             name = 'xgb'
 
-    X_train = pd.read_csv('data/processed/smote/X_train_resampled.csv')
-    y_train = pd.read_csv('data/processed/smote/y_train_resampled.csv')['Churn']
+    X_train = pd.read_csv('data/processed/smote/X_train_smote.csv')
+    y_train = pd.read_csv('data/processed/smote/y_train_smote.csv')['Churn']
     X_test = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
     y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
 
