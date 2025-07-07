@@ -9,42 +9,75 @@ stages:
       size: 13365153
     - path: src/data/data_formatting.py
       hash: md5
-      md5: 2c6bf17df9eab383a05a6aefbd05dade
-      size: 6977
+      md5: bac932d2ffa2c6199aaeda0a0f630ae3
+      size: 8136
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
     outs:
-    - path: data/processed/X_test.csv
+    - path: data/processed/scaled/X_test.csv
       hash: md5
-      md5: a35f87b1e9caa253aa6c225c7dab3692
-      size: 3161246
-    - path: data/processed/X_train.csv
+      md5: ea1bc19a5aea256c1471b19d210d027b
+      size: 3027816
+    - path: data/processed/scaled/X_train.csv
       hash: md5
-      md5: 3643fafa614f4bda4d2547a0ee4e3301
-      size: 7373916
+      md5: febbe3084a07e06c770fd4238025a68a
+      size: 6052401
+    - path: data/processed/scaled/X_val.csv
+      hash: md5
+      md5: 01e6cd870db1df05e0742b7973119f4d
+      size: 3026052
+    - path: data/processed/scaled/y_test.csv
+      hash: md5
+      md5: 626d8b1a14de173c1cb7341158c8319d
+      size: 38293
+    - path: data/processed/scaled/y_train.csv
+      hash: md5
+      md5: ebe822bfa2c8fcc82704b01da39e09d7
+      size: 76576
     - path: data/processed/test_index.pkl
       hash: md5
-      md5: 7c690cf2252f67046d05e7f64f51e6ab
-      size: 122758
+      md5: 8d8b6390f445d33e3280806bf27217cf
+      size: 102333
     - path: data/processed/train_index.pkl
       hash: md5
-      md5: 8ea8c97b2719311927f0251f22995073
-      size: 286094
-    - path: data/processed/y_test.csv
+      md5: 57abc930081035506e6f624f529ffe19
+      size: 204421
+    - path: data/processed/validation_index.pkl
       hash: md5
-      md5: 3363f8e240f73b0b02af4f3a2aa27218
-      size: 45952
-    - path: data/processed/y_train.csv
-      hash: md5
-      md5: 118aba1b6624b28fa0f6777bd7b9aaab
-      size: 107203
+      md5: 1609e13d566a6b8bb7f86a1be3e7e28a
+      size: 102333
     - path: encoders/OneHotEncoder.pkl
       hash: md5
-      md5: 86e0723f69630d29f5ba230484ac9f07
-      size: 748
+      md5: 0d85ccca5f449f38de471324ff8046c1
+      size: 747
     - path: encoders/SimpleImputer.pkl
       hash: md5
-      md5: 341c5d3e72b0148e52190d58656d1396
-      size: 477
+      md5: 8ff244ae157821f51cf207b743fcf2ae
+      size: 476
     - path: encoders/TargetEncoder.pkl
       hash: md5
-      md5: e2c6246a4edc811a9a1beb2221f4db92
-      size: 37775
+      md5: 9bda57851b254428bf7cc4168f67851f
+      size: 30250
+  eda:
+    cmd: python src/data/data_exploration.py
+    deps:
+    - path: src/data/data_exploration.py
+      hash: md5
+      md5: cc2ef68feee8b45913aaeef6a387a8ab
+      size: 3627
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
+    outs:
+    - path: data/processed/highly_correlated_feature_pairs.pkl
+      hash: md5
+      md5: 1127637dac654316ac93cb03c012617e
+      size: 207
+    - path: images/eda/
+      hash: md5
+      md5: 1320d25af0d3e853a97a000f4e0ff48f.dir
+      size: 2282823
+      nfiles: 10
