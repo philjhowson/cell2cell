@@ -22,6 +22,52 @@ stages:
     deps:
     - src/data/data_exploration.py
     - src/data/data_functions.py
+    - data/processed/X_train.csv
+    - data/processed/y_train.csv
     outs:
     - images/eda/
     - data/processed/highly_correlated_feature_pairs.pkl
+  feature_scaling:
+    cmd: python src/data/feature_engineering.py --function features
+    deps:
+    - src/data/feature_engineering.py
+    - src/data/data_functions.py
+    - data/processed/X_train.csv
+    - data/processed/X_val.csv
+    - data/processed/X_test.csv
+    outs:
+    - encoders/MinMaxScaler.pkl
+    - encoders/PCA_transformer_scaled.pkl
+    - data/processed/scaled/X_train_scaled.csv
+    - data/processed/scaled/X_val_scaled.csv
+    - data/processed/scaled/X_test_scaled.csv
+    - data/processed/scaled/X_train_scaled_pca.csv
+    - data/processed/scaled/X_val_scaled_pca.csv
+    - data/processed/scaled/X_test_scaled_pca.csv
+  scaled_rfecv_log:
+    cmd: python src/data/feature_engineering.py --function rfe --model log
+    deps:
+    - src/data/feature_engineering.py
+    - src/data/data_functions.py
+    - data/processed/scaled/X_train_scaled.csv
+    - data/processed/y_train.csv
+    outs:
+    - data/processed/scaled/RFECV_features_log.pkl
+  scaled_rfecv_rf:
+    cmd: python src/data/feature_engineering.py --function rfe --model rf
+    deps:
+    - src/data/feature_engineering.py
+    - src/data/data_functions.py
+    - data/processed/scaled/X_train_scaled.csv
+    - data/processed/y_train.csv
+    outs:
+    - data/processed/scaled/RFECV_features_rf.pkl
+  scaled_rfecv_xgb:
+    cmd: python src/data/feature_engineering.py --function rfe --model xgb
+    deps:
+    - src/data/feature_engineering.py
+    - src/data/data_functions.py
+    - data/processed/scaled/X_train_scaled.csv
+    - data/processed/y_train.csv
+    outs:
+    - data/processed/scaled/RFECV_features_xgb.pkl

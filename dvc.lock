@@ -63,6 +63,14 @@ stages:
   eda:
     cmd: python src/data/data_exploration.py
     deps:
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: febbe3084a07e06c770fd4238025a68a
+      size: 6052401
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: ebe822bfa2c8fcc82704b01da39e09d7
+      size: 76576
     - path: src/data/data_exploration.py
       hash: md5
       md5: d5f655013df2493a4741222c450a7d68
@@ -81,3 +89,131 @@ stages:
       md5: 1320d25af0d3e853a97a000f4e0ff48f.dir
       size: 2282823
       nfiles: 10
+  feature_scaling:
+    cmd: python src/data/feature_engineering.py --function features
+    deps:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: ea1bc19a5aea256c1471b19d210d027b
+      size: 3027816
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: febbe3084a07e06c770fd4238025a68a
+      size: 6052401
+    - path: data/processed/X_val.csv
+      hash: md5
+      md5: 01e6cd870db1df05e0742b7973119f4d
+      size: 3026052
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
+    - path: src/data/feature_engineering.py
+      hash: md5
+      md5: faa3dc053cbcd0b78f56e851690fb4f4
+      size: 5729
+    outs:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: b512c1e1d31f2b2502da94872fe6b014
+      size: 8425342
+    - path: data/processed/scaled/X_test_scaled_pca.csv
+      hash: md5
+      md5: 9b2af09c037fa73a0f20eea9d42b0f87
+      size: 6226794
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: 8aed966fb3378438b12e51cbd6f2a4d4
+      size: 16837882
+    - path: data/processed/scaled/X_train_scaled_pca.csv
+      hash: md5
+      md5: 983ee1ee5cef4ffbabac7b0020044378
+      size: 12451733
+    - path: data/processed/scaled/X_val_scaled.csv
+      hash: md5
+      md5: 90ce067f8578fefd0287b3b671ec2082
+      size: 8409674
+    - path: data/processed/scaled/X_val_scaled_pca.csv
+      hash: md5
+      md5: 1a011e570fea734e4526774a018faf6f
+      size: 6226514
+    - path: encoders/MinMaxScaler.pkl
+      hash: md5
+      md5: 055f585e6dc460f0c0c5343e37223dba
+      size: 4420
+    - path: encoders/PCA_transformer_scaled.pkl
+      hash: md5
+      md5: 2c333721630cf2a6d25cb482c297b2b9
+      size: 15847
+  scaled_rfecv_log:
+    cmd: python src/data/feature_engineering.py --function rfe --model log
+    deps:
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: 8aed966fb3378438b12e51cbd6f2a4d4
+      size: 16837882
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: ebe822bfa2c8fcc82704b01da39e09d7
+      size: 76576
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
+    - path: src/data/feature_engineering.py
+      hash: md5
+      md5: faa3dc053cbcd0b78f56e851690fb4f4
+      size: 5729
+    outs:
+    - path: data/processed/scaled/RFECV_features_log.pkl
+      hash: md5
+      md5: 36969bc4b19bbc99e44bb7be8e6147a8
+      size: 1422
+  scaled_rfecv_rf:
+    cmd: python src/data/feature_engineering.py --function rfe --model rf
+    deps:
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: 8aed966fb3378438b12e51cbd6f2a4d4
+      size: 16837882
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: ebe822bfa2c8fcc82704b01da39e09d7
+      size: 76576
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
+    - path: src/data/feature_engineering.py
+      hash: md5
+      md5: faa3dc053cbcd0b78f56e851690fb4f4
+      size: 5729
+    outs:
+    - path: data/processed/scaled/RFECV_features_rf.pkl
+      hash: md5
+      md5: 923698266741d722d9d47827be7cc495
+      size: 1072
+  scaled_rfecv_xgb:
+    cmd: python src/data/feature_engineering.py --function rfe --model xgb
+    deps:
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: 8aed966fb3378438b12e51cbd6f2a4d4
+      size: 16837882
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: ebe822bfa2c8fcc82704b01da39e09d7
+      size: 76576
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
+    - path: src/data/feature_engineering.py
+      hash: md5
+      md5: faa3dc053cbcd0b78f56e851690fb4f4
+      size: 5729
+    outs:
+    - path: data/processed/scaled/RFECV_features_xgb.pkl
+      hash: md5
+      md5: 442743a672b19ac1e07e512aae8c705b
+      size: 1279
