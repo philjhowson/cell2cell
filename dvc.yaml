@@ -12,11 +12,11 @@ stages:
     - encoders/OneHotEncoder.pkl
     - encoders/SimpleImputer.pkl
     - encoders/TargetEncoder.pkl
-    - data/processed/scaled/X_test.csv
-    - data/processed/scaled/X_train.csv
-    - data/processed/scaled/X_val.csv
-    - data/processed/scaled/y_test.csv
-    - data/processed/scaled/y_train.csv
+    - data/processed/X_test.csv
+    - data/processed/X_train.csv
+    - data/processed/X_val.csv
+    - data/processed/y_test.csv
+    - data/processed/y_train.csv
   eda:
     cmd: python src/data/data_exploration.py
     deps:
