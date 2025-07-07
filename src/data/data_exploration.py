@@ -2,12 +2,13 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 from data_functions import safe_saver
 
 def data_exploration():
 
-    features = pd.read_csv('data/processed/X_train.csv')
-    target = pd.read_csv('data/processed/y_train.csv')
+    features = pd.read_csv('data/processed/scaled/X_train.csv')
+    target = pd.read_csv('data/processed/scaled/y_train.csv')
     
     data = pd.concat([features, target], axis = 1)
     columns = features.columns
@@ -16,6 +17,8 @@ def data_exploration():
     To investigate the distribution of the features and the
     target 'Churn', I generate a series of boxplots.
     """
+
+    os.makedirs('images/eda', exist_ok = True)
 
     for index, value in enumerate(range(10, 71, 10)):
 
@@ -43,7 +46,7 @@ def data_exploration():
             axes.set_title(f"{column[index]} vs. Churn")
 
         plt.tight_layout()
-        plt.savefig(f'images/boxplots_columns_{start}-{value}.png')
+        plt.savefig(f'images/eda/boxplots_columns_{start}-{value}.png')
 
         start = value
 
@@ -67,14 +70,14 @@ def data_exploration():
                 linewidths = 0.5, fmt = '.2f')
 
     plt.tight_layout()
-    plt.savefig('images/correlation_matrix.png')
+    plt.savefig('images/eda/correlation_matrix.png')
 
     plt.figure(figsize = (10, 10))
     sns.heatmap(filtered_corr_mat, annot = True, cmap = 'coolwarm',
                 linewidths = 0.5, fmt = '.2f')
 
     plt.tight_layout()
-    plt.savefig('images/filtered_correlation_matrix.png')
+    plt.savefig('images/eda/filtered_correlation_matrix.png')
 
     """
     Now, I want to retrieve the pairs that are correlated for later
@@ -106,7 +109,7 @@ def data_exploration():
 
     plt.pie(sizes, labels = labels, autopct = '%1.1f%%',
             colors = colors, startangle = 90)
-    plt.savefig('images/churn_percentage.png')
+    plt.savefig('images/eda/churn_percentage.png')
     
 if __name__ == '__main__':
     data_exploration()

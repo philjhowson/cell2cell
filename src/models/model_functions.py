@@ -4,13 +4,11 @@ from torch.utils.data import DataLoader, TensorDataset
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score, roc_auc_score
+from sklearn.metrics import f1_score, roc_auc_score, confusion_matrix, classification_report
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from itertools import product
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
 from typing import Dict, Any
 import xgboost as xgb
 import numpy as np
@@ -485,14 +483,13 @@ def model_predictions(train: pd.DataFrame, test: pd.DataFrame, train_pca: pd.Dat
     return pd.DataFrame(training_preds), pd.DataFrame(training_proba), pd.DataFrame(test_preds), pd.DataFrame(test_proba)
 
 class ChurnNet(nn.Module):
-    def __init__(self, input_size = 3):
+    def __init__(self, input_size):
         """
-        initializes an FNN with multiple hidden layers, and ReLU()
-        activations. Uses the default Kaiming weight initializations.
+        initializes an FNN with hidden layers, and ReLU() activations.
+        Uses the default Kaiming weight initializations.
         args:
-            input_size: default is 3, which refers to how many model
-            outputs are stacked in the ensemble model. 1 feature for
-            each set of model predictions.
+            input_size: must be set. Dynamic setting is possible with
+            df.shape[1].
         """
         super(ChurnNet, self).__init__()
         self.ChurnNet = nn.Sequential(
@@ -508,7 +505,28 @@ class ChurnNet(nn.Module):
     def forward(self, x):
         x = self.ChurnNet(x)
         return x
+    
+class ShallowNet(nn.Module):
+    def __init__(self, input_size):
+        """
+        initializes an FNN with shallow architecture, and ReLU()
+        activations. Uses the default Kaiming weight initializations.
+        args:
+            input_size: must be set. Dynamic setting is possible with
+            df.shape[1].
+        """
+        super(ShallowNet, self).__init__()
+        self.ShallowNet = nn.Sequential(
+            nn.Linear(input_size, 64),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(64, 1))
 
+    def forward(self, x):
+        x = self.ShallowNet(x)
+        return x
+    
 class EarlyStop():
     def __init__(self, patience):
         self.best_f1 = 0
@@ -530,22 +548,26 @@ class EarlyStop():
             return True
         return False
 
-def train_ChurnNet(df, epochs, name):
-
-    X = df.drop(columns = 'Churn')
-    y = df['Churn']
+def train_net(X, y, epochs, learning_rate, model):
 
     X_train, X_val, y_train, y_val = train_test_split(X, y, stratify = y, test_size = 0.3)
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    model = ChurnNet(X_train.shape[1])
+    if model == 'ChurnNet':
+        model = ChurnNet(X_train.shape[1])
+    elif model == 'ShallowNet':
+        model = ShallowNet(X_train.shape[1])
     model.to(device)
-    optimizer = Adam(model.parameters(), lr = 0.001)
+    optimizer = Adam(model.parameters(), lr = learning_rate)
     BCE_loss = nn.BCELoss()
     scheduler = ReduceLROnPlateau(optimizer, mode = 'min', 
-                              factor = 0.1, patience = 3, 
-                              verbose = True)
+                              factor = 0.1, patience = 3)
     EarlyStopper = EarlyStop(patience = 6)
+
+    X_train = torch.tensor(X_train.values, dtype = torch.float32)
+    X_val = torch.tensor(X_val.values, dtype = torch.float32)
+    y_train = torch.tensor(y_train.values, dtype = torch.float32)
+    y_val = torch.tensor(y_val.values, dtype = torch.float32)
 
     train = TensorDataset(X_train, y_train)
     val = TensorDataset(X_val, y_val)
@@ -561,7 +583,6 @@ def train_ChurnNet(df, epochs, name):
         labels = []
         all_grads = []
         train_loss = 0
-        batch = 0
         history['epoch'].append(epoch + 1)
 
         model.train()
@@ -584,12 +605,12 @@ def train_ChurnNet(df, epochs, name):
                     all_grads.append(param.grad.detach().abs().mean().item())
 
         mean_grad = sum(all_grads) / len(all_grads) if all_grads else 0.0
-        avg_loss = train_loss / len(train_loader)
+        avg_train_loss = train_loss / len(train_loader)
         history['train_grad'].append(mean_grad)
-        history['train_loss'].append(avg_loss)
+        history['train_loss'].append(avg_train_loss)
 
         pred_labels = [1 if p >= 0.5 else 0 for p in predictions]
-        train_f1 = f1_score(labels, pred_labels, average = 'weights')
+        train_f1 = f1_score(labels, pred_labels, average = 'weighted')
         train_roc = roc_auc_score(labels, pred_labels)
         history['train_f1'].append(train_f1)
         history['train_roc'].append(train_roc)
@@ -609,19 +630,65 @@ def train_ChurnNet(df, epochs, name):
             val_predictions.extend(outputs.cpu().tolist())
             val_labels.extend(y_batch.cpu().tolist())
 
-        avg_loss = val_loss / len(val_loader)
-        history['val_loss'].append(avg_loss)
+        avg_val_loss = val_loss / len(val_loader)
+        history['val_loss'].append(avg_val_loss)
 
         pred_labels = [1 if p >= 0.5 else 0 for p in val_predictions]
-        val_f1 = f1_score(val_labels, pred_labels, average = 'weights')
+        val_f1 = f1_score(val_labels, pred_labels, average = 'weighted')
         val_roc = roc_auc_score(val_labels, pred_labels)
         history['val_f1'].append(val_f1)
         history['val_roc'].append(val_roc)
 
-        scheduler.step(avg_loss)
-        if EarlyStopper.early_stop(model, avg_loss, val_f1, val_roc):
-            print(f"Early stopping at epoch {epoch}")
+        print(f"Training F1-Score: {round(train_f1, 3)}; Training ROC-AUC: {round(train_roc, 3)}; Training Loss: {round(avg_train_loss, 3)}")
+        print(f"Training Gradient: {round(mean_grad, 3)}")
+        print(f"Validation F1-Score: {round(val_f1, 3)}; Validation ROC-AUC: {round(val_roc, 3)}; Validation Loss: {round(avg_val_loss, 3)}")
+
+        scheduler.step(avg_val_loss)
+        if EarlyStopper.early_stop(model, avg_val_loss, val_f1, val_roc):
+            print(f"Early stopping at epoch {epoch}.")
             break
 
     return EarlyStopper.best_model, history
 
+def test_net(X, y, model):
+
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if model == 'ChurnNet':
+        model = ChurnNet(X.shape[1])
+        model.load_state_dict(torch.load('models/ChurnNet_weights.pth', weights_only = True))
+    elif model == 'ShallowNet':
+        model = ShallowNet(X.shape[1])
+        model.load_state_dict(torch.load('models/ShallowNet_weights.pth', weights_only = True))
+    model.to(device)
+
+    X_test = torch.tensor(X.values, dtype = torch.float32)
+    y_test = torch.tensor(y.values, dtype = torch.float32)
+
+    test = TensorDataset(X_test, y_test)
+    test_loader = DataLoader(test, batch_size = 128, shuffle = False)
+
+    test_preds = []
+    test_labels = []
+
+    for X_batch, y_batch in test_loader:
+        X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+
+        outputs = torch.sigmoid(model(X_batch).squeeze(dim = 1))
+
+        test_preds.extend(outputs.cpu().tolist())
+        test_labels.extend(y_batch.cpu().tolist())
+
+    pred_labels = [1 if p >= 0.5 else 0 for p in test_preds]
+    test_f1 = f1_score(test_labels, pred_labels, average = 'weighted')
+    test_roc = roc_auc_score(test_labels, pred_labels)
+    conf_mat = confusion_matrix(test_labels, pred_labels, normalize = 'all')
+    class_report = classification_report(test_labels, pred_labels, output_dict = True)
+
+    test_scores = {'F1' : test_f1,
+                   'test-roc' : test_roc}
+
+    print(f"Test F1-Score: {round(test_f1, 3)}; Test ROC-AUC: {round(test_roc, 3)}")
+    print(f"Confusion Matrix:\n{conf_mat}")
+    print(f"Classification Report:\n{pd.DataFrame(class_report).transpose().round(3)}")
+
+    return test_scores, conf_mat, class_report

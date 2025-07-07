@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import itertools
 import matplotlib.pyplot as plt
 from model_functions import safe_loader, safe_saver, get_models_and_features, model_predictions
 import argparse
@@ -127,41 +128,51 @@ def get_correlations():
 
     best_model = train_preds['RFECV_xgb']
     train_preds.drop(columns = ['RFECV_xgb'], inplace = True)
-    pred_correlations = {}
+    best_triplet = None
+    lowest_max_corr = float('inf')
 
-    for column in train_preds.columns:
+    for model_combo in itertools.combinations(train_preds.columns, 2):
+        a, b = model_combo
+        
+        corr_ab = train_probs[a].corr(train_probs[b])
+        corr_ac = train_probs[a].corr(best_model)
+        corr_bc = train_probs[b].corr(best_model)
+        
+        max_corr = max(abs(corr_ab), abs(corr_ac), abs(corr_bc))
+        
+        if max_corr < lowest_max_corr:
+            lowest_max_corr = max_corr
+            best_triplet = model_combo
+            best_triplet = best_triplet + ('RFECV_xgb',)
 
-        temp = train_preds[column].copy()
-        corr = best_model.corr(temp)
-
-        pred_correlations[column] = corr
+    print(f"Best Prediction Triplet: {best_triplet}\n"
+          f"Highest Correlation among Prediction Triplet: {round(lowest_max_corr, 4)}")
+    
+    safe_saver(best_triplet, 'data/processed/', 'lowest_correlations_preds')
 
     best_model = train_probs['RFECV_xgb']
     train_probs.drop(columns = ['RFECV_xgb'], inplace = True)
-    prob_correlations = {}
+    best_triplet = None
+    lowest_max_corr = float('inf')
 
-    for column in train_probs.columns:
+    for model_combo in itertools.combinations(train_probs.columns, 2):
+        a, b = model_combo
+        
+        corr_ab = train_probs[a].corr(train_probs[b])
+        corr_ac = train_probs[a].corr(best_model)
+        corr_bc = train_probs[b].corr(best_model)
+        
+        max_corr = max(abs(corr_ab), abs(corr_ac), abs(corr_bc))
+        
+        if max_corr < lowest_max_corr:
+            lowest_max_corr = max_corr
+            best_triplet = model_combo
+            best_triplet = best_triplet + ('RFECV_xgb',)
 
-        temp = train_probs[column].copy()
-        corr = best_model.corr(temp)
-
-        prob_correlations[column] = corr
-
-    sorted_corr = sorted(pred_correlations.items(), key = lambda x: x[1])
-    lowest_two = sorted_corr[:2]
-
-    pred_keys = [k for k, v in lowest_two] 
-
-    sorted_corr = sorted(prob_correlations.items(), key = lambda x: x[1])
-    lowest_two = sorted_corr[:2]
-
-    prob_keys = [k for k, v in lowest_two]
-
-    safe_saver(pred_keys, 'data/processed/', 'lowest_correlations_preds')
-    safe_saver(prob_keys, 'data/processed/', 'lowest_correlations_probs')
-
-    print(f"Lowest Prediction Correlations: {pred_keys}")
-    print(f"Lowest Probability Correlations: {prob_keys}")
+    print(f"Best Probability Triplet: {best_triplet}\n"
+          f"Highest Correlation among Probability Triplet: {round(lowest_max_corr, 4)}")
+    
+    safe_saver(best_triplet, 'data/processed/', 'lowest_correlations_probs')
 
 def run_function(function):
     if function == 'vis':

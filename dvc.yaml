@@ -3,14 +3,25 @@ stages:
     cmd: python src/data/data_formatting.py
     deps:
     - data/raw/cell2celltrain.csv
+    - src/data/data_functions.py
     - src/data/data_formatting.py
     outs:
+    - data/processed/train_index.pkl
+    - data/processed/validation_index.pkl
+    - data/processed/test_index.pkl
     - encoders/OneHotEncoder.pkl
     - encoders/SimpleImputer.pkl
     - encoders/TargetEncoder.pkl
-    - data/processed/test_index.pkl
-    - data/processed/train_index.pkl
-    - data/processed/X_test.csv
-    - data/processed/X_train.csv
-    - data/processed/y_test.csv
-    - data/processed/y_train.csv
+    - data/processed/scaled/X_test.csv
+    - data/processed/scaled/X_train.csv
+    - data/processed/scaled/X_val.csv
+    - data/processed/scaled/y_test.csv
+    - data/processed/scaled/y_train.csv
+  eda:
+    cmd: python src/data/data_exploration.py
+    deps:
+    - src/data/data_exploration.py
+    - src/data/data_functions.py
+    outs:
+    - images/eda/
+    - data/processed/highly_correlated_feature_pairs.pkl
