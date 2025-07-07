@@ -217,3 +217,127 @@ stages:
       hash: md5
       md5: 442743a672b19ac1e07e512aae8c705b
       size: 1279
+  smote_feature_scaling:
+    cmd: python src/data/SMOTE_feature_engineering.py --function features
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: b512c1e1d31f2b2502da94872fe6b014
+      size: 8425342
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: 8aed966fb3378438b12e51cbd6f2a4d4
+      size: 16837882
+    - path: data/processed/scaled/X_val_scaled.csv
+      hash: md5
+      md5: 90ce067f8578fefd0287b3b671ec2082
+      size: 8409674
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: ebe822bfa2c8fcc82704b01da39e09d7
+      size: 76576
+    - path: src/data/SMOTE_feature_engineering.py
+      hash: md5
+      md5: 891fc0f9f6f14c6caf69e7d913f21f37
+      size: 7515
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
+    outs:
+    - path: data/processed/smote/X_test_smote_pca.csv
+      hash: md5
+      md5: 370ef465d4be9fa338440ba8dbf11854
+      size: 6232939
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 5f7d40d05dbf186b4df35de956baa43b
+      size: 23402614
+    - path: data/processed/smote/X_train_smote_pca.csv
+      hash: md5
+      md5: fc31cc364553e8364ea58d7db577e458
+      size: 17783466
+    - path: data/processed/smote/X_val_smote_pca.csv
+      hash: md5
+      md5: ea1304694064cbbcf9f2b9ff0fc7ee04
+      size: 6232323
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: 859fcf57017b58609dedf42aada5ee6c
+      size: 109015
+    - path: encoders/PCA_transformer_smote.pkl
+      hash: md5
+      md5: 10bc0abc17b59d54ebe77926bf6380f3
+      size: 15847
+  smote_rfecv_log:
+    cmd: python src/data/SMOTE_feature_engineering.py --function rfe --model log
+    deps:
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 5f7d40d05dbf186b4df35de956baa43b
+      size: 23402614
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: 859fcf57017b58609dedf42aada5ee6c
+      size: 109015
+    - path: src/data/SMOTE_feature_engineering.py
+      hash: md5
+      md5: 891fc0f9f6f14c6caf69e7d913f21f37
+      size: 7515
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
+    outs:
+    - path: data/processed/smote/RFECV_features_log.pkl
+      hash: md5
+      md5: f4b1e08894401241d63b3dc76ea8ba24
+      size: 1392
+  smote_rfecv_rf:
+    cmd: python src/data/SMOTE_feature_engineering.py --function rfe --model rf
+    deps:
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 5f7d40d05dbf186b4df35de956baa43b
+      size: 23402614
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: 859fcf57017b58609dedf42aada5ee6c
+      size: 109015
+    - path: src/data/SMOTE_feature_engineering.py
+      hash: md5
+      md5: 891fc0f9f6f14c6caf69e7d913f21f37
+      size: 7515
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
+    outs:
+    - path: data/processed/smote/RFECV_features_rf.pkl
+      hash: md5
+      md5: 586122563e433c84395ce71906951a03
+      size: 1378
+  smote_rfecv_xgb:
+    cmd: python src/data/SMOTE_feature_engineering.py --function rfe --model xgb
+    deps:
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 5f7d40d05dbf186b4df35de956baa43b
+      size: 23402614
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: 859fcf57017b58609dedf42aada5ee6c
+      size: 109015
+    - path: src/data/SMOTE_feature_engineering.py
+      hash: md5
+      md5: 891fc0f9f6f14c6caf69e7d913f21f37
+      size: 7515
+    - path: src/data/data_functions.py
+      hash: md5
+      md5: df9d275f501db1d55f013da4bf84008b
+      size: 1353
+    outs:
+    - path: data/processed/smote/RFECV_features_xgb.pkl
+      hash: md5
+      md5: ee2c994eb72059cf3b61f54f98899772
+      size: 1063

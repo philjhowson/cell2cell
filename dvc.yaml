@@ -71,3 +71,46 @@ stages:
     - data/processed/y_train.csv
     outs:
     - data/processed/scaled/RFECV_features_xgb.pkl
+  smote_feature_scaling:
+    cmd: python src/data/SMOTE_feature_engineering.py --function features
+    deps:
+    - src/data/SMOTE_feature_engineering.py
+    - src/data/data_functions.py
+    - data/processed/scaled/X_train_scaled.csv
+    - data/processed/y_train.csv
+    - data/processed/scaled/X_val_scaled.csv
+    - data/processed/scaled/X_test_scaled.csv
+    outs:
+    - encoders/PCA_transformer_smote.pkl
+    - data/processed/smote/X_train_smote.csv
+    - data/processed/smote/y_train_smote.csv
+    - data/processed/smote/X_train_smote_pca.csv
+    - data/processed/smote/X_val_smote_pca.csv
+    - data/processed/smote/X_test_smote_pca.csv
+  smote_rfecv_log:
+    cmd: python src/data/SMOTE_feature_engineering.py --function rfe --model log
+    deps:
+    - src/data/SMOTE_feature_engineering.py
+    - src/data/data_functions.py
+    - data/processed/smote/X_train_smote.csv
+    - data/processed/smote/y_train_smote.csv
+    outs:
+    - data/processed/smote/RFECV_features_log.pkl
+  smote_rfecv_rf:
+    cmd: python src/data/SMOTE_feature_engineering.py --function rfe --model rf
+    deps:
+    - src/data/SMOTE_feature_engineering.py
+    - src/data/data_functions.py
+    - data/processed/smote/X_train_smote.csv
+    - data/processed/smote/y_train_smote.csv
+    outs:
+    - data/processed/smote/RFECV_features_rf.pkl
+  smote_rfecv_xgb:
+    cmd: python src/data/SMOTE_feature_engineering.py --function rfe --model xgb
+    deps:
+    - src/data/SMOTE_feature_engineering.py
+    - src/data/data_functions.py
+    - data/processed/smote/X_train_smote.csv
+    - data/processed/smote/y_train_smote.csv
+    outs:
+    - data/processed/smote/RFECV_features_xgb.pkl
