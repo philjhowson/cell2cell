@@ -15,6 +15,7 @@ import numpy as np
 import pickle
 import copy
 import os
+import json
 
 def safe_saver(file, path, name):
     """
@@ -63,14 +64,14 @@ def get_models_and_features(models, path_to_models, path_to_features):
     return model_set
     
 def train_log_rf(model, params, X_train = None, y_train = None, X_test = None, y_test = None,
-                 folder = None, iteration = None, name = None, reduction = None):
+                 folder = None, iteration = None, name = None):
 
-    if reduction:
-        if reduction == 'pca':
+    if iteration != 'baseline':
+        if iteration == 'pca':
             X_train = pd.read_csv(f"data/processed/{folder}/X_train_{folder}_pca.csv")
-            X_test = pd.read_csv(f"data/processed/{folder}/X_test_{folder}_pca.csv")
+            X_test = pd.read_csv(f"data/processed/{folder}/X_val_{folder}_pca.csv")
         else:
-            cols_to_keep = safe_loader(f"data/processed/{folder}/{reduction}_features_{name}.pkl")
+            cols_to_keep = safe_loader(f"data/processed/{folder}/{iteration}_features_{name}.pkl")
             X_train = X_train[cols_to_keep]
             X_test = X_test[cols_to_keep]
 
@@ -98,8 +99,12 @@ def train_log_rf(model, params, X_train = None, y_train = None, X_test = None, y
                'train_roc' : train_roc,
                'test_f1' : test_f1,
                'test_roc' : test_roc}
-
-    safe_saver(results, f"metrics/{folder}/", f"{iteration}_scores_{name}")
+    
+    if not os.path.exists(f"metrics/{folder}/"):
+        os.makedirs(f"metrics/{folder}/")
+    
+    with open(f"metrics/{folder}/{iteration}_scores_{name}.json", 'w') as f:
+        json.dump(results, f)
 
     print("Best params:", best_params)
 
@@ -187,7 +192,11 @@ def pso_train_log_rf(model, params, X_train = None, y_train = None, X_test = Non
                'test_f1' : test_f1,
                'test_roc' : test_roc}
 
-    safe_saver(results, f"metrics/{folder}/", f"pso_scores_{name}")
+    if not os.path.exists(f"metrics/{folder}/"):
+        os.makedirs(f"metrics/{folder}/")
+    
+    with open(f"metrics/{folder}/pso_scores_{name}.json", 'w') as f:
+        json.dump(results, f)
 
     safe_saver(model, f"models/{folder}/", f"pso_{name}_model")
     safe_saver(best_params, f"models/{folder}/", f"pso_{name}_params")
@@ -228,14 +237,14 @@ def focal_loss(alpha = 0.25, gamma = 2.0):
     return fl_obj
 
 def train_xgb(params, X_train = None, y_train = None, X_test = None, y_test = None,
-              folder = None, iteration = None, name = None, reduction = None):
+              folder = None, iteration = None, name = None):
 
-    if reduction:
-        if reduction == 'pca':
+    if iteration != 'baseline':
+        if iteration == 'pca':
             X_train = pd.read_csv(f"data/processed/{folder}/X_train_{folder}_pca.csv")
-            X_test = pd.read_csv(f"data/processed/{folder}/X_test_{folder}_pca.csv")
+            X_test = pd.read_csv(f"data/processed/{folder}/X_val_{folder}_pca.csv")
         else:
-            cols_to_keep = safe_loader(f"data/processed/{folder}/{reduction}_features_{name}.pkl")
+            cols_to_keep = safe_loader(f"data/processed/{folder}/{iteration}_features_{name}.pkl")
             X_train = X_train[cols_to_keep]
             X_test = X_test[cols_to_keep]
 
@@ -295,7 +304,11 @@ def train_xgb(params, X_train = None, y_train = None, X_test = None, y_test = No
                'test_roc' : test_roc,
                'num_rounds' : best_iter}
 
-    safe_saver(results, f"metrics/{folder}", f"{iteration}_scores_{name}")   
+    if not os.path.exists(f"metrics/{folder}/"):
+        os.makedirs(f"metrics/{folder}/")
+    
+    with open(f"metrics/{folder}/{iteration}_scores_{name}.json", 'w') as f:
+        json.dump(results, f)
 
     print("Best params:", best_params)
 
@@ -409,7 +422,11 @@ def pso_train_xgb(params, X_train = None, y_train = None, X_test = None, y_test 
                'test_roc' : test_roc,
                'num_rounds' : best_iter}
 
-    safe_saver(results, f"metrics/{folder}", f"pso_scores_{name}")   
+    if not os.path.exists(f"metrics/{folder}/"):
+        os.makedirs(f"metrics/{folder}/")
+    
+    with open(f"metrics/{folder}/pso_scores_{name}.json", 'w') as f:
+        json.dump(results, f)  
 
     print("Best params:", best_params)
 

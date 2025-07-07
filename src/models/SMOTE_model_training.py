@@ -73,10 +73,10 @@ def RFECV_reduced(model):
     y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
 
     if name != 'xgb':
-        train_log_rf(model, params, X_train, y_train, X_test, y_test, 'smote', 'RFECV', name, 'RFECV')
+        train_log_rf(model, params, X_train, y_train, X_test, y_test, 'smote', 'RFECV', name)
 
     else:
-        train_xgb(params, X_train, y_train, X_test, y_test, 'smote', 'RFECV', name, 'RFECV')
+        train_xgb(params, X_train, y_train, X_test, y_test, 'smote', 'RFECV', name)
 
 def pso_reduced(model):
     match model:
@@ -141,18 +141,16 @@ def pca_reduced(model):
                       'colsample_bytree': [0.6, 0.8]}
             name = 'xgb'
 
-    X_train = pd.read_csv('data/processed/smote/X_train_smote.csv')
     y_train = pd.read_csv('data/processed/smote/y_train_smote.csv')['Churn']
-    X_test = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
     y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
 
     if name != 'xgb':
         train_log_rf(model, params, y_train = y_train, y_test = y_test, folder = 'smote',
-                     iteration = 'pca', name = name, reduction = 'pca')
+                     iteration = 'pca', name = name)
 
     else:
         train_xgb(params, y_train = y_train, y_test = y_test, folder = 'smote',
-                  iteration = 'pca', name = name, reduction = 'pca')
+                  iteration = 'pca', name = name)
 
 def run_script(function, model):
 

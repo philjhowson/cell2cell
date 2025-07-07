@@ -18,6 +18,7 @@ def feature_engineering():
 
     X_scaled = pd.read_csv('data/processed/scaled/X_train_scaled.csv')
     y = pd.read_csv('data/processed/y_train.csv')['Churn']
+    X_val_scaled = pd.read_csv('data/processed/scaled/X_val_scaled.csv')
     X_test_scaled = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
 
     """
@@ -69,6 +70,12 @@ def feature_engineering():
 
     X_train_scaled_pca = pd.DataFrame(X_train_scaled_pca, columns = [f'PC{i+1}' for i in range(X_train_scaled_pca.shape[1])])
     X_train_scaled_pca.to_csv('data/processed/smote/X_train_scaled_pca.csv', index = False)
+
+    X_val_pca = X_val_scaled.copy()
+    X_val_pca = pca.transform(X_val_pca)
+    
+    X_val_pca = pd.DataFrame(X_val_pca, columns = [f'PC{i+1}' for i in range(X_val_pca.shape[1])])
+    X_val_pca.to_csv('data/processed/smote/X_val_smote_pca.csv', index = False)
 
     X_test_pca = X_test_scaled.copy()
     X_test_pca = pca.transform(X_test_pca)

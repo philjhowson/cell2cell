@@ -16,8 +16,8 @@ import numpy as np
 def feature_engineering():
 
     X = pd.read_csv('data/processed/X_train.csv')
+    X_val = pd.read_csv('data/processed/X_val.csv')
     X_test = pd.read_csv('data/processed/X_test.csv')
-    y = pd.read_csv('data/processed/y_train.csv')
 
     """
     MinMaxScaler used because many models assume similar scales for features and
@@ -29,10 +29,14 @@ def feature_engineering():
     X_scaled = scaler.fit_transform(X)
     X_scaled = pd.DataFrame(X_scaled, columns = X.columns)
 
+    X_val_scaled = scaler.transform(X_val)
+    X_val_scaled = pd.DataFrame(X_val_scaled, columns = X_val.columns)
+
     X_test_scaled = scaler.transform(X_test)
     X_test_scaled = pd.DataFrame(X_test_scaled, columns = X_test.columns)
 
     X_scaled.to_csv('data/processed/scaled/X_train_scaled.csv', index = False)
+    X_val_scaled.to_csv('data/processed/scaled/X_val_scaled.csv', index = False)
     X_test_scaled.to_csv('data/processed/scaled/X_test_scaled.csv', index = False)
 
     safe_saver(scaler, 'encoders/', 'MinMaxScaler') 
@@ -45,6 +49,13 @@ def feature_engineering():
 
     X_train_pca.to_csv('data/processed/scaled/X_train_scaled_pca.csv', index = False)
     safe_saver(pca, 'encoders/', 'PCA_transformer_scaled')
+
+    X_val_scaled = X_val_scaled.copy()
+    X_val_scaled = pca.transform(X_val_scaled)
+    
+    X_val_scaled = pd.DataFrame(X_val_scaled, columns = [f'PC{i+1}' for i in range(X_val_scaled.shape[1])])
+
+    X_val_scaled.to_csv('data/processed/scaled/X_val_scaled_pca.csv', index = False)
 
     X_test_pca = X_test_scaled.copy()
     X_test_pca = pca.transform(X_test_pca)

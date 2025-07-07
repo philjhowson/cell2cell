@@ -33,8 +33,8 @@ def train_baseline(model):
 
     X_train = pd.read_csv('data/processed/scaled/X_train_scaled.csv')
     y_train = pd.read_csv('data/processed/y_train.csv')['Churn']
-    X_test = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
-    y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
+    X_test = pd.read_csv('data/processed/scaled/X_val_scaled.csv')
+    y_test = pd.read_csv('data/processed/y_val.csv')['Churn']
 
     if name != 'xgb':
         train_log_rf(model, params, X_train, y_train, X_test, y_test, 'scaled', 'baseline', name)
@@ -70,14 +70,14 @@ def RFECV_reduced(model):
 
     X_train = pd.read_csv('data/processed/scaled/X_train_scaled.csv')
     y_train = pd.read_csv('data/processed/y_train.csv')['Churn']
-    X_test = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
-    y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
+    X_test = pd.read_csv('data/processed/scaled/X_val_scaled.csv')
+    y_test = pd.read_csv('data/processed/y_val.csv')['Churn']
 
     if name != 'xgb':
-        train_log_rf(model, params, X_train, y_train, X_test, y_test, 'scaled', 'RFECV', name, 'RFECV')
+        train_log_rf(model, params, X_train, y_train, X_test, y_test, 'scaled', 'RFECV', name)
 
     else:
-        train_xgb(params, X_train, y_train, X_test, y_test, 'scaled', 'RFECV', name, 'RFECV')
+        train_xgb(params, X_train, y_train, X_test, y_test, 'scaled', 'RFECV', name)
 
 def pso_reduced(model):
     match model:
@@ -107,8 +107,8 @@ def pso_reduced(model):
 
     X_train = pd.read_csv('data/processed/scaled/X_train_scaled.csv')
     y_train = pd.read_csv('data/processed/y_train.csv')['Churn']
-    X_test = pd.read_csv('data/processed/scaled/X_test_scaled.csv')
-    y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
+    X_test = pd.read_csv('data/processed/scaled/X_val_scaled.csv')
+    y_test = pd.read_csv('data/processed/y_val.csv')['Churn']
 
     if name != 'xgb':
         pso_train_log_rf(model, params, X_train, y_train, X_test, y_test, folder = 'scaled', name = name)
@@ -143,15 +143,15 @@ def pca_reduced(model):
             name = 'xgb'
 
     y_train = pd.read_csv('data/processed/y_train.csv')['Churn']
-    y_test = pd.read_csv('data/processed/y_test.csv')['Churn']
+    y_test = pd.read_csv('data/processed/y_val.csv')['Churn']
 
     if name != 'xgb':
         train_log_rf(model, params, y_train = y_train, y_test = y_test, folder = 'scaled',
-                     iteration = 'pca', name = name, reduction = 'pca')
+                     iteration = 'pca', name = name)
 
     else:
         train_xgb(params, y_train = y_train, y_test = y_test, folder = 'scaled',
-                  iteration = 'pca', name = name, reduction = 'pca')
+                  iteration = 'pca', name = name)
 
 def run_script(function, model):
 

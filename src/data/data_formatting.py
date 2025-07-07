@@ -2,7 +2,6 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from data_functions import safe_saver
-from sklearn.decomposition import PCA
 import category_encoders as ce
 import pandas as pd
 import warnings
@@ -173,12 +172,12 @@ def format_data():
 
     safe_saver(encoder, 'encoders/', 'TargetEncoder')
 
-    X_train.to_csv('data/processed/scaled/X_train.csv', index = False)
-    X_val.to_csv('data/processed/scaled/X_val.csv', index = False)
-    X_test.to_csv('data/processed/scaled/X_test.csv', index = False)
-    y_train.to_csv('data/processed/scaled/y_train.csv', index = False)
-    y_val.to_csv('data/processed/scaled/y_val.csv', index = False)
-    y_test.to_csv('data/processed/scaled/y_test.csv', index = False)
+    X_train.to_csv('data/processed/X_train.csv', index = False)
+    X_val.to_csv('data/processed/X_val.csv', index = False)
+    X_test.to_csv('data/processed/X_test.csv', index = False)
+    y_train.to_csv('data/processed/y_train.csv', index = False)
+    y_val.to_csv('data/processed/y_val.csv', index = False)
+    y_test.to_csv('data/processed/y_test.csv', index = False)
 
 if __name__ == '__main__':
     format_data()

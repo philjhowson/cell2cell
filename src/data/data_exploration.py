@@ -7,8 +7,8 @@ from data_functions import safe_saver
 
 def data_exploration():
 
-    features = pd.read_csv('data/processed/scaled/X_train.csv')
-    target = pd.read_csv('data/processed/scaled/y_train.csv')
+    features = pd.read_csv('data/processed/X_train.csv')
+    target = pd.read_csv('data/processed/y_train.csv')
     
     data = pd.concat([features, target], axis = 1)
     columns = features.columns
