@@ -189,7 +189,7 @@ stages:
     do:
       cmd: python src/models/SMOTE_model_training.py --function ${item.function} --model ${item.model}
       deps:
-      - src/models/model_training.py
+      - src/models/SMOTE_model_training.py
       - src/models/model_functions.py
       - data/processed/smote/X_train_smote.csv
       - data/processed/smote/y_train_smote.csv
