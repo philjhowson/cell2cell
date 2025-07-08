@@ -225,3 +225,74 @@ stages:
       - models/smote/pso_feature_importance_${item}.csv
       metrics:
       - metrics/smote/pso_scores_${item}.json
+  visualize_results:
+    cmd: python src/models/get_model_predictions.py --function vis
+    deps:
+    - src/models/get_model_predictions.py
+    - src/models/model_functions.py
+    - metrics/scaled/baseline_scores_log.json
+    - metrics/scaled/baseline_scores_rf.json
+    - metrics/scaled/baseline_scores_xgb.json
+    - metrics/scaled/RFECV_scores_log.json
+    - metrics/scaled/RFECV_scores_rf.json
+    - metrics/scaled/RFECV_scores_xgb.json
+    - metrics/scaled/pca_scores_log.json
+    - metrics/scaled/pca_scores_rf.json
+    - metrics/scaled/pca_scores_xgb.json
+    - metrics/scaled/pso_scores_log.json
+    - metrics/scaled/pso_scores_rf.json
+    - metrics/scaled/pso_scores_xgb.json
+    - metrics/smote/baseline_scores_log.json
+    - metrics/smote/baseline_scores_rf.json
+    - metrics/smote/baseline_scores_xgb.json
+    - metrics/smote/RFECV_scores_log.json
+    - metrics/smote/RFECV_scores_rf.json
+    - metrics/smote/RFECV_scores_xgb.json
+    - metrics/smote/pca_scores_log.json
+    - metrics/smote/pca_scores_rf.json
+    - metrics/smote/pca_scores_xgb.json
+    - metrics/smote/pso_scores_log.json
+    - metrics/smote/pso_scores_rf.json
+    - metrics/smote/pso_scores_xgb.json
+    plots:
+    - images/training_and_test_scores.png
+  get_predictions:
+    cmd: python src/models/get_model_predictions.py --function preds
+    deps:
+    - src/models/get_model_predictions.py
+    - src/models/model_functions.py
+    - models/scaled/baseline_log_model.pkl
+    - models/scaled/baseline_rf_model.pkl
+    - models/scaled/baseline_xgb_model.pkl
+    - models/scaled/RFECV_log_model.pkl
+    - models/scaled/RFECV_rf_model.pkl
+    - models/scaled/RFECV_xgb_model.pkl
+    - models/scaled/pca_log_model.pkl
+    - models/scaled/pca_rf_model.pkl
+    - models/scaled/pca_xgb_model.pkl
+    - models/scaled/pso_log_model.pkl
+    - models/scaled/pso_rf_model.pkl
+    - models/scaled/pso_xgb_model.pkl
+    - models/smote/baseline_log_model.pkl
+    - models/smote/baseline_rf_model.pkl
+    - models/smote/baseline_xgb_model.pkl
+    - models/smote/RFECV_log_model.pkl
+    - models/smote/RFECV_rf_model.pkl
+    - models/smote/RFECV_xgb_model.pkl
+    - models/smote/pca_log_model.pkl
+    - models/smote/pca_rf_model.pkl
+    - models/smote/pca_xgb_model.pkl
+    - models/smote/pso_log_model.pkl
+    - models/smote/pso_rf_model.pkl
+    - models/smote/pso_xgb_model.pkl
+    - data/processed/scaled/X_val_scaled.csv
+    - data/processed/scaled/X_test_scaled.csv 
+    - data/processed/scaled/X_val_scaled_pca.csv
+    - data/processed/scaled/X_test_scaled_pca.csv
+    - data/processed/scaled/X_val_scaled_pca.csv
+    - data/processed/scaled/X_test_scaled_pca.csv
+    outs:
+    - data/processed/training_model_preds.csv
+    - data/processed/training_model_probs.csv
+    - data/processed/test_model_preds.csv
+    - data/processed/test_model_probs.csv    
