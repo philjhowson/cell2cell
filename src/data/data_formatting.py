@@ -1,7 +1,7 @@
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
-from data_functions import safe_saver
+from data_utils import safe_saver
 import category_encoders as ce
 import pandas as pd
 import warnings
@@ -46,22 +46,22 @@ def format_data():
     X = data.drop(columns = ['CustomerID', 'Churn'])
     y = data['Churn']
 
-    X_train, X_, y_train, y_ = train_test_split(X, y, test_size = 0.5, stratify = y,
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, stratify = y,
                                                 random_state = 42)
-    
-    X_val, X_test, y_val, y_test = train_test_split(X_, y_, test_size = 0.5, stratify = y_,
-                                                    random_state = 42)
 
     train_index = X_train.index
-    val_index = X_val.index
     test_index = X_test.index
 
+    """
+    I like to save the indices incase there is a need to retrieve the original split for
+    processing at later stages.
+    """
+
     safe_saver(train_index, 'data/processed/', 'train_index')
-    safe_saver(val_index, 'data/processed/', 'validation_index')
     safe_saver(test_index, 'data/processed/', 'test_index')
 
-    X_train, X_val, X_test = X_train.reset_index(drop = True), X_val.reset_index(drop = True), X_test.reset_index(drop = True)
-    y_train, y_val, y_test = y_train.reset_index(drop = True), y_val.reset_index(drop = True), y_test.reset_index(drop = True)
+    X_train, X_test = X_train.reset_index(drop = True), X_test.reset_index(drop = True)
+    y_train, y_test = y_train.reset_index(drop = True), y_test.reset_index(drop = True)
 
     """
     here I replace the 'Unknown' data in HandsetPrice with the median
@@ -72,7 +72,7 @@ def format_data():
     are 0 or 1, where a mean would be inappropraite. 
     """
 
-    for dataset in [X_train, X_val, X_test]:
+    for dataset in [X_train, X_test]:
 
         dataset['HandsetPrice'] = dataset['HandsetPrice'].replace({'Unknown': None})
         dataset['HandsetPrice'] = pd.to_numeric(dataset['HandsetPrice'], errors='coerce')
@@ -100,11 +100,6 @@ def format_data():
     encoded = encoded.astype('int')
     X_train = pd.concat([X_train, encoded], axis = 1).drop(columns = ['PrizmCode', 'Occupation'])
 
-    encoded = pd.DataFrame(encoder.transform(X_val[['PrizmCode', 'Occupation']]),
-                           columns = encoder.get_feature_names_out(['PrizmCode', 'Occupation']))
-    encoded = encoded.astype('int')
-    X_val = pd.concat([X_val, encoded], axis = 1).drop(columns = ['PrizmCode', 'Occupation'])
-
     encoded = pd.DataFrame(encoder.transform(X_test[['PrizmCode', 'Occupation']]),
                            columns = encoder.get_feature_names_out(['PrizmCode', 'Occupation']))
     encoded = encoded.astype('int')
@@ -127,7 +122,7 @@ def format_data():
     na_columns = data.columns[data.isna().any()].tolist()
     na_columns.remove('ServiceArea')
 
-    for dataset in [X_train, X_val, X_test]:
+    for dataset in [X_train, X_test]:
         for column in na_columns:
             median = dataset[column].median()
             dataset[column].fillna(median, inplace = True)
@@ -139,7 +134,6 @@ def format_data():
     imputer = SimpleImputer(strategy = 'most_frequent')
 
     X_train['ServiceArea'] = imputer.fit_transform(X_train[['ServiceArea']]).flatten()
-    X_val['ServiceArea'] = imputer.transform(X_val[['ServiceArea']]).flatten()
     X_test['ServiceArea'] = imputer.transform(X_test[['ServiceArea']]).flatten()
 
     safe_saver(imputer, 'encoders/', 'SimpleImputer')
@@ -154,29 +148,19 @@ def format_data():
 
     encoded = encoder.fit_transform(X_train[['ServiceArea', 'HandsetModels']],
                                     y_train)
-
     X_train = pd.concat([X_train.drop(columns = ['ServiceArea', 'HandsetModels']), encoded],
-                        axis = 1)
-
-    encoded = encoder.transform(X_val[['ServiceArea', 'HandsetModels']],
-                                y_val)
-
-    X_val = pd.concat([X_val.drop(columns = ['ServiceArea', 'HandsetModels']), encoded],
                         axis = 1)
 
     encoded = encoder.transform(X_test[['ServiceArea', 'HandsetModels']],
                                 y_test)
-
     X_test = pd.concat([X_test.drop(columns = ['ServiceArea', 'HandsetModels']), encoded],
                         axis = 1)
 
     safe_saver(encoder, 'encoders/', 'TargetEncoder')
 
     X_train.to_csv('data/processed/X_train.csv', index = False)
-    X_val.to_csv('data/processed/X_val.csv', index = False)
     X_test.to_csv('data/processed/X_test.csv', index = False)
     y_train.to_csv('data/processed/y_train.csv', index = False)
-    y_val.to_csv('data/processed/y_val.csv', index = False)
     y_test.to_csv('data/processed/y_test.csv', index = False)
 
 if __name__ == '__main__':

@@ -3,296 +3,96 @@ stages:
     cmd: python src/data/data_formatting.py
     deps:
     - data/raw/cell2celltrain.csv
-    - src/data/data_functions.py
+    - src/data/data_utils.py
     - src/data/data_formatting.py
     outs:
     - data/processed/train_index.pkl
-    - data/processed/validation_index.pkl
     - data/processed/test_index.pkl
     - encoders/OneHotEncoder.pkl
     - encoders/SimpleImputer.pkl
     - encoders/TargetEncoder.pkl
     - data/processed/X_test.csv
     - data/processed/X_train.csv
-    - data/processed/X_val.csv
     - data/processed/y_test.csv
     - data/processed/y_train.csv
   eda:
     cmd: python src/data/data_exploration.py
     deps:
     - src/data/data_exploration.py
-    - src/data/data_functions.py
+    - src/data/data_utils.py
     - data/processed/X_train.csv
     - data/processed/y_train.csv
     outs:
     - images/eda/
     - data/processed/highly_correlated_feature_pairs.pkl
-  feature_scaling:
-    cmd: python src/data/feature_engineering.py --function features
+  feature_engineering:
+    cmd: python src/data/feature_engineering.py
     deps:
     - src/data/feature_engineering.py
-    - src/data/data_functions.py
+    - src/data/data_utils.py
     - data/processed/X_train.csv
-    - data/processed/X_val.csv
     - data/processed/X_test.csv
     outs:
     - encoders/MinMaxScaler.pkl
     - encoders/PCA_transformer_scaled.pkl
+    - encoders/PCA_transformer_smote.pkl
     - data/processed/scaled/X_train_scaled.csv
-    - data/processed/scaled/X_val_scaled.csv
     - data/processed/scaled/X_test_scaled.csv
     - data/processed/scaled/X_train_scaled_pca.csv
-    - data/processed/scaled/X_val_scaled_pca.csv
     - data/processed/scaled/X_test_scaled_pca.csv
-  scaled_rfecv:
-    foreach:
-      - log
-      - rf
-      - xgb
-    do:
-      cmd: python src/data/feature_engineering.py --function rfe --model ${item}
-      deps:
-      - src/data/feature_engineering.py
-      - src/data/data_functions.py
-      - data/processed/scaled/X_train_scaled.csv
-      - data/processed/y_train.csv
-      outs:
-      - data/processed/scaled/RFECV_features_${item}.pkl
-  smote_feature_scaling:
-    cmd: python src/data/SMOTE_feature_engineering.py --function features
-    deps:
-    - src/data/SMOTE_feature_engineering.py
-    - src/data/data_functions.py
-    - data/processed/scaled/X_train_scaled.csv
-    - data/processed/y_train.csv
-    - data/processed/scaled/X_val_scaled.csv
-    - data/processed/scaled/X_test_scaled.csv
-    outs:
-    - encoders/PCA_transformer_smote.pkl
     - data/processed/smote/X_train_smote.csv
     - data/processed/smote/y_train_smote.csv
     - data/processed/smote/X_train_smote_pca.csv
-    - data/processed/smote/X_val_smote_pca.csv
     - data/processed/smote/X_test_smote_pca.csv
-  smote_rfecv_log:
-    foreach:
-      - log
-      - rf
-      - xgb
-    do:
-      cmd: python src/data/SMOTE_feature_engineering.py --function rfe --model ${item}
-      deps:
-      - src/data/feature_engineering.py
-      - src/data/data_functions.py
-      - data/processed/smote/X_train_smote.csv
-      - data/processed/smote/y_train_smote.csv
-      outs:
-      - data/processed/smote/RFECV_features_${item}.pkl
-  train_scaled_models:
+  rfecv_feature_reduction:
     foreach:
       - model: log
-        function: base
-        output: baseline
+        sample: scaled
       - model: rf
-        function: base
-        output: baseline
+        sample: scaled
       - model: xgb
-        function: base
-        output: baseline
+        sample: scaled
       - model: log
-        function: rfe
-        output: RFECV
+        sample: smote
       - model: rf
-        function: rfe
-        output: RFECV
+        sample: smote
       - model: xgb
-        function: rfe
-        output: RFECV
-      - model: log
-        function: pca
-        output: pca
-      - model: rf
-        function: pca
-        output: pca
-      - model: xgb
-        function: pca
-        output: pca
+        sample: smote
     do:
-      cmd: python src/models/model_training.py --function ${item.function} --model ${item.model}
+      cmd: python src/data/rfecv_feature_reduction.py --model ${item.model} --sample ${item.sample}
       deps:
-      - src/models/model_training.py
-      - src/models/model_functions.py
+      - src/data/rfecv_feature_reduction.py
+      - src/data/data_utils.py
       - data/processed/scaled/X_train_scaled.csv
       - data/processed/y_train.csv
-      - data/processed/scaled/X_val_scaled.csv
-      - data/processed/y_val.csv
-      - data/processed/scaled/X_train_scaled_pca.csv
-      - data/processed/scaled/X_val_scaled_pca.csv
-      - data/processed/scaled/RFECV_features_${item.model}.pkl
+      - data/processed/smote/X_train_smote.csv
+      - data/processed/smote/y_train_smote.csv
       outs:
-      - models/scaled/${item.output}_${item.model}_params.pkl
-      - models/scaled/${item.output}_${item.model}_model.pkl
-      - models/scaled/${item.output}_feature_importance_${item.model}.csv
-      metrics:
-      - metrics/scaled/${item.output}_scores_${item.model}.json
-  train_scaled_pso:
+      - data/processed/${item.sample}/RFECV_features_${item.model}.pkl
+  pso_feature_reduction:
     foreach:
-      - log
-      - rf
-      - xgb
+      - model: log
+        sample: scaled
+      - model: rf
+        sample: scaled
+      - model: xgb
+        sample: scaled
+      - model: log
+        sample: smote
+      - model: rf
+        sample: smote
+      - model: xgb
+        sample: smote
     do:
-      cmd: python src/models/model_training.py --function pso --model ${item}
+      cmd: python src/data/pso_feature_reduction.py --model ${item.model} --sample ${item.sample}
       deps:
-      - src/models/model_training.py
-      - src/models/model_functions.py
+      - src/data/pso_feature_reduction.py
+      - src/data/data_utils.py
+      - src/data/pso_utils.py
+      - data/processed/pso_options.pkl
       - data/processed/scaled/X_train_scaled.csv
       - data/processed/y_train.csv
-      - data/processed/scaled/X_val_scaled.csv
-      - data/processed/y_val.csv
-      - data/processed/scaled/pso_feature_set_${item}.pkl
-      outs:
-      - data/processed/scaled/pso_features_${item}.pkl
-      - models/scaled/pso_${item}_model.pkl
-      - models/scaled/pso_${item}_params.pkl
-      - models/scaled/pso_feature_importance_${item}.csv
-      metrics:
-      - metrics/scaled/pso_scores_${item}.json
-  train_smote_models:
-    foreach:
-      - model: log
-        function: base
-        output: baseline
-      - model: rf
-        function: base
-        output: baseline
-      - model: xgb
-        function: base
-        output: baseline
-      - model: log
-        function: rfe
-        output: RFECV
-      - model: rf
-        function: rfe
-        output: RFECV
-      - model: xgb
-        function: rfe
-        output: RFECV
-      - model: log
-        function: pca
-        output: pca
-      - model: rf
-        function: pca
-        output: pca
-      - model: xgb
-        function: pca
-        output: pca
-    do:
-      cmd: python src/models/SMOTE_model_training.py --function ${item.function} --model ${item.model}
-      deps:
-      - src/models/SMOTE_model_training.py
-      - src/models/model_functions.py
       - data/processed/smote/X_train_smote.csv
       - data/processed/smote/y_train_smote.csv
-      - data/processed/scaled/X_val_scaled.csv
-      - data/processed/y_val.csv
-      - data/processed/smote/X_train_smote_pca.csv
-      - data/processed/smote/X_val_smote_pca.csv
       outs:
-      - models/smote/${item.output}_${item.model}_params.pkl
-      - models/smote/${item.output}_${item.model}_model.pkl
-      - models/smote/${item.output}_feature_importance_${item.model}.csv
-      metrics:
-      - metrics/smote/${item.output}_scores_${item.model}.json
-  train_smote_pso:
-    foreach:
-      - log
-      - rf
-      - xgb
-    do:
-      cmd: python src/models/SMOTE_model_training.py --function pso --model ${item}
-      deps:
-      - src/models/model_training.py
-      - src/models/model_functions.py
-      - data/processed/smote/X_train_smote.csv
-      - data/processed/smote/y_train_smote.csv
-      - data/processed/scaled/X_val_scaled.csv
-      - data/processed/y_val.csv
-      - data/processed/scaled/pso_feature_set_${item}.pkl
-      outs:
-      - data/processed/smote/pso_features_${item}.pkl
-      - models/smote/pso_${item}_model.pkl
-      - models/smote/pso_${item}_params.pkl
-      - models/smote/pso_feature_importance_${item}.csv
-      metrics:
-      - metrics/smote/pso_scores_${item}.json
-  visualize_results:
-    cmd: python src/models/get_model_predictions.py --function vis
-    deps:
-    - src/models/get_model_predictions.py
-    - src/models/model_functions.py
-    - metrics/scaled/baseline_scores_log.json
-    - metrics/scaled/baseline_scores_rf.json
-    - metrics/scaled/baseline_scores_xgb.json
-    - metrics/scaled/RFECV_scores_log.json
-    - metrics/scaled/RFECV_scores_rf.json
-    - metrics/scaled/RFECV_scores_xgb.json
-    - metrics/scaled/pca_scores_log.json
-    - metrics/scaled/pca_scores_rf.json
-    - metrics/scaled/pca_scores_xgb.json
-    - metrics/scaled/pso_scores_log.json
-    - metrics/scaled/pso_scores_rf.json
-    - metrics/scaled/pso_scores_xgb.json
-    - metrics/smote/baseline_scores_log.json
-    - metrics/smote/baseline_scores_rf.json
-    - metrics/smote/baseline_scores_xgb.json
-    - metrics/smote/RFECV_scores_log.json
-    - metrics/smote/RFECV_scores_rf.json
-    - metrics/smote/RFECV_scores_xgb.json
-    - metrics/smote/pca_scores_log.json
-    - metrics/smote/pca_scores_rf.json
-    - metrics/smote/pca_scores_xgb.json
-    - metrics/smote/pso_scores_log.json
-    - metrics/smote/pso_scores_rf.json
-    - metrics/smote/pso_scores_xgb.json
-    plots:
-    - images/training_and_test_scores.png
-  get_predictions:
-    cmd: python src/models/get_model_predictions.py --function preds
-    deps:
-    - src/models/get_model_predictions.py
-    - src/models/model_functions.py
-    - models/scaled/baseline_log_model.pkl
-    - models/scaled/baseline_rf_model.pkl
-    - models/scaled/baseline_xgb_model.pkl
-    - models/scaled/RFECV_log_model.pkl
-    - models/scaled/RFECV_rf_model.pkl
-    - models/scaled/RFECV_xgb_model.pkl
-    - models/scaled/pca_log_model.pkl
-    - models/scaled/pca_rf_model.pkl
-    - models/scaled/pca_xgb_model.pkl
-    - models/scaled/pso_log_model.pkl
-    - models/scaled/pso_rf_model.pkl
-    - models/scaled/pso_xgb_model.pkl
-    - models/smote/baseline_log_model.pkl
-    - models/smote/baseline_rf_model.pkl
-    - models/smote/baseline_xgb_model.pkl
-    - models/smote/RFECV_log_model.pkl
-    - models/smote/RFECV_rf_model.pkl
-    - models/smote/RFECV_xgb_model.pkl
-    - models/smote/pca_log_model.pkl
-    - models/smote/pca_rf_model.pkl
-    - models/smote/pca_xgb_model.pkl
-    - models/smote/pso_log_model.pkl
-    - models/smote/pso_rf_model.pkl
-    - models/smote/pso_xgb_model.pkl
-    - data/processed/scaled/X_val_scaled.csv
-    - data/processed/scaled/X_test_scaled.csv 
-    - data/processed/scaled/X_val_scaled_pca.csv
-    - data/processed/scaled/X_test_scaled_pca.csv
-    - data/processed/scaled/X_val_scaled_pca.csv
-    - data/processed/scaled/X_test_scaled_pca.csv
-    outs:
-    - data/processed/training_model_preds.csv
-    - data/processed/training_model_probs.csv
-    - data/processed/test_model_preds.csv
-    - data/processed/test_model_probs.csv    
+      - data/processed/${item.sample}/pso_feature_set_${item.model}.pkl

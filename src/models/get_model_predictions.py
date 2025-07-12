@@ -4,6 +4,7 @@ import itertools
 import matplotlib.pyplot as plt
 from model_functions import safe_loader, safe_saver, get_models_and_features, model_predictions
 import argparse
+import json
 import os
 
 def print_model_results():
@@ -15,7 +16,8 @@ def print_model_results():
     scaled_results = {}
 
     for index, file in enumerate(files):
-        scaled_results[shorthand[index]] = safe_loader(f"{path}{file}")
+        with open(f"{path}{file}", 'r') as f:
+            scaled_results[shorthand[index]] = json.load(f)
 
     scaled_test_f1 = [float(scaled_results[item]['test_f1']) for item in scaled_results.keys()]
     scaled_test_roc = [float(scaled_results[item]['test_roc']) for item in scaled_results.keys()]
@@ -24,8 +26,9 @@ def print_model_results():
     files = sorted([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))], key = str.lower)
     smote_results = {}
 
-    for index, file, in enumerate(files):
-        smote_results[shorthand[index]] = safe_loader(f"{path}{file}")
+    for index, file in enumerate(files):
+        with open(f"{path}{file}", 'r') as f:
+            smote_results[shorthand[index]] = json.load(f)
 
     smote_test_f1 = [float(smote_results[item]['test_f1']) for item in smote_results.keys()]
     smote_test_roc = [float(smote_results[item]['test_roc']) for item in smote_results.keys()]
@@ -85,9 +88,9 @@ def get_predictions():
 
     scaled_dictionary = get_models_and_features(scaled_model_names, path_to_models, path_to_features)
 
-    X_train_scaled = pd.read_csv(f"{path_to_features}/X_train_scaled.csv")
+    X_train_scaled = pd.read_csv(f"{path_to_features}/X_val_scaled.csv")
     X_test_scaled = pd.read_csv(f"{path_to_features}/X_test_scaled.csv")
-    X_train_scaled_pca = pd.read_csv(f"{path_to_features}/X_train_scaled_pca.csv")
+    X_train_scaled_pca = pd.read_csv(f"{path_to_features}/X_val_scaled_pca.csv")
     X_test_scaled_pca = pd.read_csv(f"{path_to_features}/X_test_scaled_pca.csv")  
 
     print('Getting model predictions...')
@@ -102,7 +105,7 @@ def get_predictions():
 
     smote_dictionary = get_models_and_features(smote_model_names, path_to_models, path_to_features)
 
-    X_train_smote_pca = pd.read_csv(f"{path_to_features}/X_train_scaled_pca.csv")
+    X_train_smote_pca = pd.read_csv(f"{path_to_features}/X_val_smote_pca.csv")
     X_test_smote_pca = pd.read_csv(f"{path_to_features}/X_test_smote_pca.csv")
 
     smote_train_preds, smote_train_probs, smote_test_preds, smote_test_probs = model_predictions(X_train_scaled, X_test_scaled,
