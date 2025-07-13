@@ -2609,3 +2609,1183 @@ stages:
       hash: md5
       md5: 753ae808b01cbea85463a3fd466bd844
       size: 4989
+  baseline_model_training@0:
+    cmd: python src/models/train_models.py --model log --sample scaled 
+      --strategy baseline
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/scaled/baseline_scores_log.json
+      hash: md5
+      md5: 011070b1b19fdca009f45ae294121d6f
+      size: 128
+    - path: models/scaled/baseline_feature_importances_log.csv
+      hash: md5
+      md5: 0830dae222dd380f503f2cc1ac451e44
+      size: 3876
+    - path: models/scaled/baseline_log_model.pkl
+      hash: md5
+      md5: 934fe2d9fa5b9421a46f181e120dcfee
+      size: 2527
+    - path: models/scaled/baseline_log_params.json
+      hash: md5
+      md5: 2514db48bc0d0f9fcd26fa067ea24100
+      size: 26
+  baseline_model_training@1:
+    cmd: python src/models/train_models.py --model rf --sample scaled --strategy
+      baseline
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/scaled/baseline_scores_rf.json
+      hash: md5
+      md5: 43d3fa835ae81993b11dd3f53d300bff
+      size: 128
+    - path: models/scaled/baseline_feature_importances_rf.csv
+      hash: md5
+      md5: b91f771718279b70ecd1bad6a1d1c6c0
+      size: 2720
+    - path: models/scaled/baseline_rf_model.pkl
+      hash: md5
+      md5: ecf658de1e88645401d56a00e35e3943
+      size: 1478636
+    - path: models/scaled/baseline_rf_params.json
+      hash: md5
+      md5: e318d03be548bc65ec43dc6ac6063e58
+      size: 107
+  baseline_model_training@2:
+    cmd: python src/models/train_models.py --model xgb --sample scaled 
+      --strategy baseline
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/scaled/baseline_scores_xgb.json
+      hash: md5
+      md5: 567439f71ecbbb9f3e16377e0fbd5c8f
+      size: 147
+    - path: models/scaled/baseline_feature_importances_xgb.csv
+      hash: md5
+      md5: f28b9fc6f7334533408766259445a150
+      size: 1632
+    - path: models/scaled/baseline_xgb_model.pkl
+      hash: md5
+      md5: c31753fe1fd41aa61273e9d0ad1dc75a
+      size: 2771619
+    - path: models/scaled/baseline_xgb_params.json
+      hash: md5
+      md5: 283df48fa495523e48a25313ecd783a6
+      size: 216
+  baseline_model_training@3:
+    cmd: python src/models/train_models.py --model log --sample smote --strategy
+      baseline
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/smote/baseline_scores_log.json
+      hash: md5
+      md5: 0a6657464520fb091946454151138bba
+      size: 128
+    - path: models/smote/baseline_feature_importances_log.csv
+      hash: md5
+      md5: 18dca9165df2bec09b8db41b89867665
+      size: 3874
+    - path: models/smote/baseline_log_model.pkl
+      hash: md5
+      md5: abd779d04386204f9c0926cfff668b92
+      size: 2527
+    - path: models/smote/baseline_log_params.json
+      hash: md5
+      md5: 2514db48bc0d0f9fcd26fa067ea24100
+      size: 26
+  baseline_model_training@4:
+    cmd: python src/models/train_models.py --model rf --sample smote --strategy 
+      baseline
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/smote/baseline_scores_rf.json
+      hash: md5
+      md5: b9e2c7d0f0d1fa89241cfbb561dee957
+      size: 128
+    - path: models/smote/baseline_feature_importances_rf.csv
+      hash: md5
+      md5: 5ea25afbe4fd93cf441fbe1f9e94e426
+      size: 2741
+    - path: models/smote/baseline_rf_model.pkl
+      hash: md5
+      md5: f3824247f0d158e0500e9ffa818ca9c3
+      size: 1510796
+    - path: models/smote/baseline_rf_params.json
+      hash: md5
+      md5: 742ed17a48c03a58090d556c805c055f
+      size: 108
+  baseline_model_training@5:
+    cmd: python src/models/train_models.py --model xgb --sample smote --strategy
+      baseline
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/smote/baseline_scores_xgb.json
+      hash: md5
+      md5: 50d1392afca0c4fa6ef6a4928d46c852
+      size: 148
+    - path: models/smote/baseline_feature_importances_xgb.csv
+      hash: md5
+      md5: 4fd9c7276247e5ffed0853b924eff892
+      size: 1657
+    - path: models/smote/baseline_xgb_model.pkl
+      hash: md5
+      md5: f9d35bc508323c87682144bf1e7cba0a
+      size: 4672732
+    - path: models/smote/baseline_xgb_params.json
+      hash: md5
+      md5: a5893b12601ff7491104458d219541a9
+      size: 217
+  rfecv_model_training@0:
+    cmd: python src/models/train_models.py --model log --sample scaled 
+      --strategy rfecv
+    deps:
+    - path: data/processed/scaled/RFECV_features_log.pkl
+      hash: md5
+      md5: 36969bc4b19bbc99e44bb7be8e6147a8
+      size: 1422
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/scaled/rfecv_scores_log.json
+      hash: md5
+      md5: c2cc1a74e275543dff18e17a833942f1
+      size: 127
+    - path: models/scaled/rfecv_feature_importances_log.csv
+      hash: md5
+      md5: f63d78942c892457d7f73b39ac1f852b
+      size: 3858
+    - path: models/scaled/rfecv_log_model.pkl
+      hash: md5
+      md5: d72aa14d2ce61ef0814088df0db8b61e
+      size: 2527
+    - path: models/scaled/rfecv_log_params.json
+      hash: md5
+      md5: 2514db48bc0d0f9fcd26fa067ea24100
+      size: 26
+  rfecv_model_training@1:
+    cmd: python src/models/train_models.py --model rf --sample scaled --strategy
+      rfecv
+    deps:
+    - path: data/processed/scaled/RFECV_features_rf.pkl
+      hash: md5
+      md5: 5056c4ec4f9c5e1ce028e121d4ad26fb
+      size: 1128
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/scaled/rfecv_scores_rf.json
+      hash: md5
+      md5: c1041d2495887abdffdcd36b8f718bc1
+      size: 126
+    - path: models/scaled/rfecv_feature_importances_rf.csv
+      hash: md5
+      md5: bd0e2eeacc8bc9d6ec6fed154628c3f1
+      size: 2105
+    - path: models/scaled/rfecv_rf_model.pkl
+      hash: md5
+      md5: d916db290a9cb8254f680ff59f8dccb6
+      size: 1494022
+    - path: models/scaled/rfecv_rf_params.json
+      hash: md5
+      md5: e318d03be548bc65ec43dc6ac6063e58
+      size: 107
+  rfecv_model_training@2:
+    cmd: python src/models/train_models.py --model xgb --sample scaled 
+      --strategy rfecv
+    deps:
+    - path: data/processed/scaled/RFECV_features_xgb.pkl
+      hash: md5
+      md5: 76ba6cab99d3fd8775fb0047b6245395
+      size: 871
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/scaled/rfecv_scores_xgb.json
+      hash: md5
+      md5: 54f5acd72dadf936303f28bda80a40f1
+      size: 148
+    - path: models/scaled/rfecv_feature_importances_xgb.csv
+      hash: md5
+      md5: 63842f3a004e95d5be1d9dca5ca4d213
+      size: 954
+    - path: models/scaled/rfecv_xgb_model.pkl
+      hash: md5
+      md5: debbc30bc46f354fa980066bc11a9deb
+      size: 2200975
+    - path: models/scaled/rfecv_xgb_params.json
+      hash: md5
+      md5: 30d5ac78cfda603b1f274d817edb7477
+      size: 217
+  rfecv_model_training@3:
+    cmd: python src/models/train_models.py --model log --sample smote --strategy
+      rfecv
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/RFECV_features_log.pkl
+      hash: md5
+      md5: 1a764a9814e6a752fc0c4b0be7e44be2
+      size: 1287
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/smote/rfecv_scores_log.json
+      hash: md5
+      md5: 7b961fdfabc3415adb26094d57ac84e8
+      size: 128
+    - path: models/smote/rfecv_feature_importances_log.csv
+      hash: md5
+      md5: 566e8fb0bcc3af48fb5af3bca098c253
+      size: 3394
+    - path: models/smote/rfecv_log_model.pkl
+      hash: md5
+      md5: 3f4098d2f93ddfb74a5de41fb04c6096
+      size: 2328
+    - path: models/smote/rfecv_log_params.json
+      hash: md5
+      md5: 2514db48bc0d0f9fcd26fa067ea24100
+      size: 26
+  rfecv_model_training@4:
+    cmd: python src/models/train_models.py --model rf --sample smote --strategy 
+      rfecv
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/RFECV_features_rf.pkl
+      hash: md5
+      md5: 089339986b972c3c39a37db287e0922e
+      size: 1377
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/smote/rfecv_scores_rf.json
+      hash: md5
+      md5: 9bd482e838ee1521d95a45d747034ac6
+      size: 127
+    - path: models/smote/rfecv_feature_importances_rf.csv
+      hash: md5
+      md5: 9fb46672ce6f89412a9cb5e6417ed8a6
+      size: 2643
+    - path: models/smote/rfecv_rf_model.pkl
+      hash: md5
+      md5: 97e8b897f673bba625c8dc5856455e75
+      size: 1505471
+    - path: models/smote/rfecv_rf_params.json
+      hash: md5
+      md5: 11fceb9c544ae1b8ee575272cf744943
+      size: 107
+  rfecv_model_training@5:
+    cmd: python src/models/train_models.py --model xgb --sample smote --strategy
+      rfecv
+    deps:
+    - path: data/processed/scaled/X_test_scaled.csv
+      hash: md5
+      md5: 0c82ebd61efd358185a6e49e0875f61e
+      size: 10111263
+    - path: data/processed/scaled/X_train_scaled.csv
+      hash: md5
+      md5: cb6f310c4deb6fc28bedd32692f1c6a5
+      size: 23592910
+    - path: data/processed/smote/RFECV_features_xgb.pkl
+      hash: md5
+      md5: 4ce06d3e85f98b3c2c079b0250367958
+      size: 1292
+    - path: data/processed/smote/X_train_smote.csv
+      hash: md5
+      md5: 6e4c00fef29d85e16559800bd16b4d68
+      size: 33892313
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/smote/rfecv_scores_xgb.json
+      hash: md5
+      md5: 90b2226043bc2069d64cbe7e3111e696
+      size: 148
+    - path: models/smote/rfecv_feature_importances_xgb.csv
+      hash: md5
+      md5: 0a507eb9aacd3fc7e8d1f5f11f312228
+      size: 1568
+    - path: models/smote/rfecv_xgb_model.pkl
+      hash: md5
+      md5: 826e9f165ff39457dc778b6532d5288d
+      size: 5057443
+    - path: models/smote/rfecv_xgb_params.json
+      hash: md5
+      md5: d9a1ada3d9b59388c12c073e2024e9e3
+      size: 217
+  pca_model_training@0:
+    cmd: python src/models/train_models.py --model log --sample scaled 
+      --strategy pca
+    deps:
+    - path: data/processed/scaled/X_test_scaled_pca.csv
+      hash: md5
+      md5: d7af5f90fb61b7d453840bf078ee4d44
+      size: 7486051
+    - path: data/processed/scaled/X_train_scaled_pca.csv
+      hash: md5
+      md5: 26c99f96cf6a8e973c2b73d41724ec65
+      size: 17468617
+    - path: data/processed/smote/X_train_smote_pca.csv
+      hash: md5
+      md5: be841a0bc6db96f244dfca330b9d4bbf
+      size: 24896543
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/scaled/pca_scores_log.json
+      hash: md5
+      md5: 47a6c8c66f3e5050bd6152ff4623b6f0
+      size: 128
+    - path: models/scaled/pca_feature_importances_log.csv
+      hash: md5
+      md5: b453808c94de64be3bcc2cdd5cf7cd61
+      size: 1199
+    - path: models/scaled/pca_log_model.pkl
+      hash: md5
+      md5: e9f81b252f9abcf72cab9797abe59832
+      size: 1157
+    - path: models/scaled/pca_log_params.json
+      hash: md5
+      md5: 9448eb5bbcd8c9ebac3aed1f47db0045
+      size: 27
+  pca_model_training@1:
+    cmd: python src/models/train_models.py --model rf --sample scaled --strategy
+      pca
+    deps:
+    - path: data/processed/scaled/X_test_scaled_pca.csv
+      hash: md5
+      md5: d7af5f90fb61b7d453840bf078ee4d44
+      size: 7486051
+    - path: data/processed/scaled/X_train_scaled_pca.csv
+      hash: md5
+      md5: 26c99f96cf6a8e973c2b73d41724ec65
+      size: 17468617
+    - path: data/processed/smote/X_train_smote_pca.csv
+      hash: md5
+      md5: be841a0bc6db96f244dfca330b9d4bbf
+      size: 24896543
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/scaled/pca_scores_rf.json
+      hash: md5
+      md5: e80a2c41e583e00bf7eb3a69633e851e
+      size: 127
+    - path: models/scaled/pca_feature_importances_rf.csv
+      hash: md5
+      md5: 3124e71ffa34cf26187d810fb5b01763
+      size: 705
+    - path: models/scaled/pca_rf_model.pkl
+      hash: md5
+      md5: c42a07168e86398c2502b5dc1834a06c
+      size: 1427189
+    - path: models/scaled/pca_rf_params.json
+      hash: md5
+      md5: e318d03be548bc65ec43dc6ac6063e58
+      size: 107
+  pca_model_training@2:
+    cmd: python src/models/train_models.py --model xgb --sample scaled 
+      --strategy pca
+    deps:
+    - path: data/processed/scaled/X_test_scaled_pca.csv
+      hash: md5
+      md5: d7af5f90fb61b7d453840bf078ee4d44
+      size: 7486051
+    - path: data/processed/scaled/X_train_scaled_pca.csv
+      hash: md5
+      md5: 26c99f96cf6a8e973c2b73d41724ec65
+      size: 17468617
+    - path: data/processed/smote/X_train_smote_pca.csv
+      hash: md5
+      md5: be841a0bc6db96f244dfca330b9d4bbf
+      size: 24896543
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/scaled/pca_scores_xgb.json
+      hash: md5
+      md5: 8b64a43dc8af33aa14c0d7d8961cec31
+      size: 147
+    - path: models/scaled/pca_feature_importances_xgb.csv
+      hash: md5
+      md5: 5fce9cce2135bbd00c48a4eb1203a139
+      size: 363
+    - path: models/scaled/pca_xgb_model.pkl
+      hash: md5
+      md5: e4a65d57edc50698bb830b47bfecafb0
+      size: 1065625
+    - path: models/scaled/pca_xgb_params.json
+      hash: md5
+      md5: 229f3f61dcf8a7283da2936fb94815a4
+      size: 216
+  pca_model_training@3:
+    cmd: python src/models/train_models.py --model log --sample smote --strategy
+      pca
+    deps:
+    - path: data/processed/scaled/X_test_scaled_pca.csv
+      hash: md5
+      md5: d7af5f90fb61b7d453840bf078ee4d44
+      size: 7486051
+    - path: data/processed/scaled/X_train_scaled_pca.csv
+      hash: md5
+      md5: 26c99f96cf6a8e973c2b73d41724ec65
+      size: 17468617
+    - path: data/processed/smote/X_train_smote_pca.csv
+      hash: md5
+      md5: be841a0bc6db96f244dfca330b9d4bbf
+      size: 24896543
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/smote/pca_scores_log.json
+      hash: md5
+      md5: 7549d943047b0cd37e84ccb179b0d0aa
+      size: 127
+    - path: models/smote/pca_feature_importances_log.csv
+      hash: md5
+      md5: bf15bc90de5614e0bb9a5f71b09c2bef
+      size: 1183
+    - path: models/smote/pca_log_model.pkl
+      hash: md5
+      md5: 988f8b4d9ce6aff1ead8ccfb9a44f3cc
+      size: 1157
+    - path: models/smote/pca_log_params.json
+      hash: md5
+      md5: caf273e76cd0464ab94e12811622c17f
+      size: 28
+  pca_model_training@4:
+    cmd: python src/models/train_models.py --model rf --sample smote --strategy 
+      pca
+    deps:
+    - path: data/processed/scaled/X_test_scaled_pca.csv
+      hash: md5
+      md5: d7af5f90fb61b7d453840bf078ee4d44
+      size: 7486051
+    - path: data/processed/scaled/X_train_scaled_pca.csv
+      hash: md5
+      md5: 26c99f96cf6a8e973c2b73d41724ec65
+      size: 17468617
+    - path: data/processed/smote/X_train_smote_pca.csv
+      hash: md5
+      md5: be841a0bc6db96f244dfca330b9d4bbf
+      size: 24896543
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/smote/pca_scores_rf.json
+      hash: md5
+      md5: fba3e8eba6db69448cbf91938555c879
+      size: 128
+    - path: models/smote/pca_feature_importances_rf.csv
+      hash: md5
+      md5: 8f54b7e2ebebd790e723cacaf1adeddc
+      size: 708
+    - path: models/smote/pca_rf_model.pkl
+      hash: md5
+      md5: 5f5fc22fc5ede40fa18acf78bd26266c
+      size: 1545127
+    - path: models/smote/pca_rf_params.json
+      hash: md5
+      md5: 2e5c71d1acc7491d7684684fa32d1144
+      size: 106
+  pca_model_training@5:
+    cmd: python src/models/train_models.py --model xgb --sample smote --strategy
+      pca
+    deps:
+    - path: data/processed/scaled/X_test_scaled_pca.csv
+      hash: md5
+      md5: d7af5f90fb61b7d453840bf078ee4d44
+      size: 7486051
+    - path: data/processed/scaled/X_train_scaled_pca.csv
+      hash: md5
+      md5: 26c99f96cf6a8e973c2b73d41724ec65
+      size: 17468617
+    - path: data/processed/smote/X_train_smote_pca.csv
+      hash: md5
+      md5: be841a0bc6db96f244dfca330b9d4bbf
+      size: 24896543
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 91298553de41a03759f8645f336983dd
+      size: 3470
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: 4d2c6cc8ad70b993dbc239926665e1c9
+      size: 10588
+    outs:
+    - path: metrics/smote/pca_scores_xgb.json
+      hash: md5
+      md5: 4166aa84596a279a145dac4b4011d79b
+      size: 148
+    - path: models/smote/pca_feature_importances_xgb.csv
+      hash: md5
+      md5: 58d20d54b3344223cfd1ff823a789d2c
+      size: 385
+    - path: models/smote/pca_xgb_model.pkl
+      hash: md5
+      md5: 9f90de9947e92789b8e8d1101c1f97f1
+      size: 3092109
+    - path: models/smote/pca_xgb_params.json
+      hash: md5
+      md5: 7435f6dcaaf3871add666726dcfca260
+      size: 217
+  pso_model_training@0:
+    cmd: python src/models/train_models.py --model log --sample scaled 
+      --strategy pso
+    deps:
+    - path: data/processed/scaled/X_test_scaled_pca.csv
+      hash: md5
+      md5: d7af5f90fb61b7d453840bf078ee4d44
+      size: 7486051
+    - path: data/processed/scaled/X_train_scaled_pca.csv
+      hash: md5
+      md5: 26c99f96cf6a8e973c2b73d41724ec65
+      size: 17468617
+    - path: data/processed/scaled/pso_feature_set_log.pkl
+      hash: md5
+      md5: af3cf1de2877d04571aab7d84d04b95a
+      size: 4933
+    - path: data/processed/smote/X_train_smote_pca.csv
+      hash: md5
+      md5: be841a0bc6db96f244dfca330b9d4bbf
+      size: 24896543
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 8e9cbf881a3c869d7d6a7867427bf553
+      size: 4003
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: da7e86c5a5713e26898c25775cd999bb
+      size: 21628
+    outs:
+    - path: metrics/scaled/pso_grid_scores_log.json
+      hash: md5
+      md5: bbced49f4cfeb5b7c9a63ea1e333da28
+      size: 4439
+    - path: metrics/scaled/pso_scores_log.json
+      hash: md5
+      md5: 55a9f8373070645f117c5c57c5bda84a
+      size: 128
+    - path: models/scaled/pso_feature_importances_log.csv
+      hash: md5
+      md5: 14a9ca1c336f86bae970c16217dba026
+      size: 1099
+    - path: models/scaled/pso_log_model.pkl
+      hash: md5
+      md5: 63d32b3008e555241114d3bc253f5f04
+      size: 1284
+    - path: models/scaled/pso_log_params.json
+      hash: md5
+      md5: 37e236709816e2788cafb4daa4cdbf24
+      size: 443
+  pso_model_training@1:
+    cmd: python src/models/train_models.py --model rf --sample scaled --strategy
+      pso
+    deps:
+    - path: data/processed/scaled/X_test_scaled_pca.csv
+      hash: md5
+      md5: d7af5f90fb61b7d453840bf078ee4d44
+      size: 7486051
+    - path: data/processed/scaled/X_train_scaled_pca.csv
+      hash: md5
+      md5: 26c99f96cf6a8e973c2b73d41724ec65
+      size: 17468617
+    - path: data/processed/scaled/pso_feature_set_rf.pkl
+      hash: md5
+      md5: d2e1296e0a91d2f44aace4d0aa1a0d55
+      size: 4989
+    - path: data/processed/smote/X_train_smote_pca.csv
+      hash: md5
+      md5: be841a0bc6db96f244dfca330b9d4bbf
+      size: 24896543
+    - path: data/processed/smote/y_train_smote.csv
+      hash: md5
+      md5: aa3064138544b8a27bd284bba59cf7f7
+      size: 152617
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3363f8e240f73b0b02af4f3a2aa27218
+      size: 45952
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
+    - path: src/models/general_utils.py
+      hash: md5
+      md5: 13953374cc8cc5f0dd1dc599f0e96382
+      size: 743
+    - path: src/models/train_models.py
+      hash: md5
+      md5: 8e9cbf881a3c869d7d6a7867427bf553
+      size: 4003
+    - path: src/models/training_utils.py
+      hash: md5
+      md5: da7e86c5a5713e26898c25775cd999bb
+      size: 21628
+    outs:
+    - path: metrics/scaled/pso_grid_scores_rf.json
+      hash: md5
+      md5: a9967ee0ab3467014ffc9caf029da915
+      size: 5320
+    - path: metrics/scaled/pso_scores_rf.json
+      hash: md5
+      md5: 996b57c9e286fb41bc996502742b8d00
+      size: 128
+    - path: models/scaled/pso_feature_importances_rf.csv
+      hash: md5
+      md5: 20c37f68782228c16da7d82b320bafbe
+      size: 631
+    - path: models/scaled/pso_rf_model.pkl
+      hash: md5
+      md5: e096dabdd265c844a33852cd50f568e2
+      size: 1495961
+    - path: models/scaled/pso_rf_params.json
+      hash: md5
+      md5: daa9c45eb0b3405a8d126140591c61a6
+      size: 458
