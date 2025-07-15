@@ -11,4 +11,5 @@ data/raw/
 models/
 metrics/
 
-!data/models/
+!src/models/
+!src/data
