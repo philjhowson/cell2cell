@@ -232,6 +232,8 @@ stages:
     deps:
     - src/models/visualize_results.py
     - src/models/vis_utils.py
+    - data/processed/X_train.csv
+    - data/processed/y_train.csv
     - metrics/scaled/baseline_scores_log.json
     - metrics/scaled/baseline_scores_rf.json
     - metrics/scaled/baseline_scores_xgb.json
@@ -258,3 +260,4 @@ stages:
     - metrics/smote/rfecv_scores_xgb.json
     outs:
     - images/model_results.png
+    - images/monthsinservice_churn.png

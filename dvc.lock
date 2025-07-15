@@ -4046,6 +4046,14 @@ stages:
   model_visualization:
     cmd: python src/models/visualize_results.py
     deps:
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: f4bbfbd7ea526fbf400560c425d70e65
+      size: 8472341
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 118aba1b6624b28fa0f6777bd7b9aaab
+      size: 107203
     - path: metrics/scaled/baseline_scores_log.json
       hash: md5
       md5: 011070b1b19fdca009f45ae294121d6f
@@ -4148,10 +4156,14 @@ stages:
       size: 1401
     - path: src/models/visualize_results.py
       hash: md5
-      md5: 55f0027b76dc2f65f836b00163002bd4
-      size: 1958
+      md5: 360dc6a56a7606697fe98878de56a79b
+      size: 2659
     outs:
     - path: images/model_results.png
       hash: md5
       md5: 5579a801e863d382c93bbc7a9c360ece
       size: 66730
+    - path: images/monthsinservice_churn.png
+      hash: md5
+      md5: 570c5603803b7619ffb703c06421cfa9
+      size: 30896
