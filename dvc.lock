@@ -76,7 +76,7 @@ stages:
       hash: md5
       md5: 1127637dac654316ac93cb03c012617e
       size: 207
-    - path: images/eda/
+    - path: images/eda
       hash: md5
       md5: 5e1be84e5bca5c8a708edc60088983a1.dir
       size: 2282008
@@ -4043,3 +4043,115 @@ stages:
       hash: md5
       md5: d5442418f98620b9dfbd829f3cac41a1
       size: 216
+  model_visualization:
+    cmd: python src/models/visualize_results.py
+    deps:
+    - path: metrics/scaled/baseline_scores_log.json
+      hash: md5
+      md5: 011070b1b19fdca009f45ae294121d6f
+      size: 128
+    - path: metrics/scaled/baseline_scores_rf.json
+      hash: md5
+      md5: 43d3fa835ae81993b11dd3f53d300bff
+      size: 128
+    - path: metrics/scaled/baseline_scores_xgb.json
+      hash: md5
+      md5: 567439f71ecbbb9f3e16377e0fbd5c8f
+      size: 147
+    - path: metrics/scaled/pca_scores_log.json
+      hash: md5
+      md5: 47a6c8c66f3e5050bd6152ff4623b6f0
+      size: 128
+    - path: metrics/scaled/pca_scores_rf.json
+      hash: md5
+      md5: e80a2c41e583e00bf7eb3a69633e851e
+      size: 127
+    - path: metrics/scaled/pca_scores_xgb.json
+      hash: md5
+      md5: 8b64a43dc8af33aa14c0d7d8961cec31
+      size: 147
+    - path: metrics/scaled/pso_scores_log.json
+      hash: md5
+      md5: 7b4e7f16b213e48d2ff85de2da12405c
+      size: 128
+    - path: metrics/scaled/pso_scores_rf.json
+      hash: md5
+      md5: 996b57c9e286fb41bc996502742b8d00
+      size: 128
+    - path: metrics/scaled/pso_scores_xgb.json
+      hash: md5
+      md5: db5db7567db82f85c0911627a3787e05
+      size: 146
+    - path: metrics/scaled/rfecv_scores_log.json
+      hash: md5
+      md5: c2cc1a74e275543dff18e17a833942f1
+      size: 127
+    - path: metrics/scaled/rfecv_scores_rf.json
+      hash: md5
+      md5: c1041d2495887abdffdcd36b8f718bc1
+      size: 126
+    - path: metrics/scaled/rfecv_scores_xgb.json
+      hash: md5
+      md5: 54f5acd72dadf936303f28bda80a40f1
+      size: 148
+    - path: metrics/smote/baseline_scores_log.json
+      hash: md5
+      md5: 0a6657464520fb091946454151138bba
+      size: 128
+    - path: metrics/smote/baseline_scores_rf.json
+      hash: md5
+      md5: b9e2c7d0f0d1fa89241cfbb561dee957
+      size: 128
+    - path: metrics/smote/baseline_scores_xgb.json
+      hash: md5
+      md5: 50d1392afca0c4fa6ef6a4928d46c852
+      size: 148
+    - path: metrics/smote/pca_scores_log.json
+      hash: md5
+      md5: 7549d943047b0cd37e84ccb179b0d0aa
+      size: 127
+    - path: metrics/smote/pca_scores_rf.json
+      hash: md5
+      md5: fba3e8eba6db69448cbf91938555c879
+      size: 128
+    - path: metrics/smote/pca_scores_xgb.json
+      hash: md5
+      md5: 4166aa84596a279a145dac4b4011d79b
+      size: 148
+    - path: metrics/smote/pso_scores_log.json
+      hash: md5
+      md5: 23b430eb9939536d82c5912771995819
+      size: 128
+    - path: metrics/smote/pso_scores_rf.json
+      hash: md5
+      md5: 4fd309c06035b0ca9323d68ff00fee73
+      size: 128
+    - path: metrics/smote/pso_scores_xgb.json
+      hash: md5
+      md5: 3a5ef49a2f60955e481a8f766b17b229
+      size: 146
+    - path: metrics/smote/rfecv_scores_log.json
+      hash: md5
+      md5: 7b961fdfabc3415adb26094d57ac84e8
+      size: 128
+    - path: metrics/smote/rfecv_scores_rf.json
+      hash: md5
+      md5: 9bd482e838ee1521d95a45d747034ac6
+      size: 127
+    - path: metrics/smote/rfecv_scores_xgb.json
+      hash: md5
+      md5: 90b2226043bc2069d64cbe7e3111e696
+      size: 148
+    - path: src/models/vis_utils.py
+      hash: md5
+      md5: 6437a84b82f0abacada3ec3e094baae0
+      size: 1401
+    - path: src/models/visualize_results.py
+      hash: md5
+      md5: 55f0027b76dc2f65f836b00163002bd4
+      size: 1958
+    outs:
+    - path: images/model_results.png
+      hash: md5
+      md5: 5579a801e863d382c93bbc7a9c360ece
+      size: 66730
