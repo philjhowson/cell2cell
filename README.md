@@ -11,5 +11,11 @@ planned models.
 
 ## Project Organization
 ------------------------------------------------------------------------
+## Project Organization
     root
-    ├── data
+    ├── .dvc # DagsHub relevant files    
+    ├── data 
+    │   ├── processed # processed data hosted on DagsHub   
+    │   └── raw # downloadable from kaggle link above
+    ├── encoders # scalers, pca encoders etc.
+    ├── images # ou    

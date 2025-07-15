@@ -23,10 +23,8 @@ stages:
     - data/processed/X_train.csv
     - data/processed/y_train.csv
     outs:
+    - images/eda
     - data/processed/highly_correlated_feature_pairs.pkl
-    plots:
-    - images/eda:
-        type: image
   feature_engineering:
     cmd: python src/data/feature_engineering.py
     deps:
@@ -258,6 +256,5 @@ stages:
     - metrics/smote/rfecv_scores_log.json
     - metrics/smote/rfecv_scores_rf.json
     - metrics/smote/rfecv_scores_xgb.json
-    plots:
-    - images/model_results.png:
-        type: image
+    outs:
+    - images/model_results.png
