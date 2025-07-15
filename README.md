@@ -18,4 +18,13 @@ planned models.
     │   ├── processed # processed data hosted on DagsHub   
     │   └── raw # downloadable from kaggle link above
     ├── encoders # scalers, pca encoders etc.
-    ├── images # ou    
+    ├── images # output images
+    │   ├── eda # images from eda  
+    │   ├── .gitignore
+    │   └── model_results.png
+    ├── metrics # model scores
+    │   ├── scaled # scores for scaled models
+    │   └── smote # scores for smote models
+    ├── models # model files, feature importances and model parameters
+    │   ├── scaled # files for models trained on scaled data
+    │   └── smote # files for models trained on smote data
