@@ -83,7 +83,7 @@ less 'Churn' clients in the dataset, the medians, ranges, IQRs, were all similar
 across 'Churn' and 'NoChurn' clients.
 
 <div align="center">
-  <img src = "images/eda/boxplots_columns_GIT.png" alt = "Sample boxplots" height = "400"/>
+  <img src = "images/boxplots_columns_GIT.png" alt = "Sample boxplots" height = "400"/>
 </div>
 
 There were additionally a large number of features with very high correlations,
@@ -111,7 +111,7 @@ The image below shows barplots for each of the different conditions and their F1
 and ROC-AUC scores.
 
 <div align="center">
-  <img src = "images/model_results_GIT.png" alt = "Correlations" height = "200"/>
+  <img src = "images/model_results_GIT.png" alt = "model results" height = "200"/>
 </div>
 
 ## Key Findings
