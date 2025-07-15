@@ -6,8 +6,7 @@ feature transformations, and model selection. The aim of this project is to corr
 predict customer churn. I am using ROC-AUC and F1-Score to evaluate the performance of each
 planned models.
 
-[cell2cell Dataset](https://www.kaggle.com/datasets/jpacse/datasets-for-churn-telecom)
-[DagsHub](https://dagshub.com/philjhowson/cell2cell)
+[cell2cell Dataset](https://www.kaggle.com/datasets/jpacse/datasets-for-churn-telecom) | [DagsHub](https://dagshub.com/philjhowson/cell2cell)
 
 ## Project Organization
 ------------------------------------------------------------------------
@@ -36,7 +35,7 @@ planned models.
     │   │   ├── pso_feature_reduction.py # feature selection with pso
     │   │   ├── pso_utils.py # functions used for pso reduction
     │   │   ├── rfecv_feature_reduction.py # RFECV feature selection
-    │   └── models # model training, evlauation, and visualization
+    │   └── models # model training, evaluation, and visualization
     │       ├── general_utils.py # functions used by scripts
     │       ├── pso_training_utils.py # functions used by pso training
     │       ├── train_models.py # trains log, rf, and xgb models
@@ -122,7 +121,7 @@ be negatively correlated to customer churn in the logistic regression model. Thi
 is important because it means that making customer care calls to clients who are
 considered higher risk for churn should reduce the number of customers who churn.
 
-Additional, I find that there is a huge spike in churners at 11 months and this
+Additionally, I find that there is a huge spike in churners at 11 months and this
 steadily declines. This tells us that the longer the client has the service, the
 less likely they are to churn. It would also be valuable to take time to analyze
 what factors within the first year and especially around month 11 cause people
